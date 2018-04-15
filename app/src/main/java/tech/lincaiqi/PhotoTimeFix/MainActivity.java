@@ -18,9 +18,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
 
@@ -57,7 +62,6 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "路径不存在", Toast.LENGTH_LONG).show();
                     return;
                 }
-                final ArrayList<String> list = new ArrayList<String>();
                 final File[] files = file.listFiles();
                 final ProgressDialog pd = new ProgressDialog(MainActivity.this);
                 pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -73,7 +77,40 @@ public class MainActivity extends Activity {
 
                         for (File f : files) {
                             Log.d("File:", f.getName());
-                            list.add(f.getName());
+
+                            String time = f.getName();
+                            String regEx = "[^0-9]";
+                            Pattern pa = Pattern.compile(regEx);
+                            Matcher m = pa.matcher(time);
+                            time = m.replaceAll("").trim();
+                            String command;
+                            if (time.indexOf("20") != -1) {
+                                command = null;
+                                command = "touch -t " + time.substring(time.indexOf("20"), time.indexOf("20") + 12) + " " + f.getAbsolutePath();
+                                Log.d("shell", command);
+
+                                try {
+                                    Runtime.getRuntime().exec(new String[]{"/system/bin/su","-c", command});
+                                    /*String data = null;
+                                    BufferedReader ie = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+                                    BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                                    String error = null;
+                                    while ((error = ie.readLine()) != null
+                                            && !error.equals("null")) {
+                                        data += error + "\n";
+                                    }
+                                    String line = null;
+                                    while ((line = in.readLine()) != null
+                                            && !line.equals("null")) {
+                                        data += line + "\n";
+                                    }
+                                    if (data != null && data != "") {
+                                        Log.e("touch", data);
+                                    }*/
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
 
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 @Override
@@ -82,9 +119,13 @@ public class MainActivity extends Activity {
                                 }
                             });
 
-                        }
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
 
-                        Collections.sort(list);
+                        }
 
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override

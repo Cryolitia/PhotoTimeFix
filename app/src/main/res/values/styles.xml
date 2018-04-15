@@ -1,9 +1,20 @@
 <resources>
 
-<style name="AppTheme" parent="android:Theme.Material.Light">
-    <item name="android:colorPrimary">@color/colorPrimary</item>
-    <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="android:colorAccent">@color/colorAccent</item>
-</style>
+    <style name="AppTheme" parent="android:Theme.Material.Light">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+
+    <style name="MyActionBar" parent="android:Widget.DeviceDefault.ActionBar">
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
+    </style>
+
+    <style name="MyActionBarTitleText" parent="android:TextAppearance.DeviceDefault.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
 </resources>

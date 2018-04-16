@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class MainActivity extends Activity {
     private TextView locateTv;
     private EditText start;
     private EditText end;
+    private CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends Activity {
         locateTv = (TextView) findViewById(R.id.locateText);
         start = (EditText) findViewById(R.id.start);
         end = (EditText) findViewById(R.id.end);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
 
         try {
             Runtime.getRuntime().exec("su");
@@ -66,6 +69,7 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 final int startnum = Integer.valueOf(start.getText().toString());
                 final int endnum = Integer.valueOf(end.getText().toString());
+                final boolean check = checkBox.isChecked();
                 File file = new File(locateTv.getText().toString());
                 //Log.d("EditText", locateTv.getText().toString());
                 if (!file.exists()) {
@@ -140,9 +144,15 @@ public class MainActivity extends Activity {
 
                         }
 
-                        Looper.prepare();
-                        Toast.makeText(MainActivity.this, "完成！", Toast.LENGTH_LONG).show();
-                        Looper.loop();
+                        if (check == true) {
+                            try {
+                                Runtime.getRuntime().exec(new String[]{"su","-c", "am force-stop com.android.systemui"});
+                                Runtime.getRuntime().exec(new String[]{"su","-c", "am force-stop tech.lincaiqi.PhotoTimeFix"});
+                                Runtime.getRuntime().exec(new String[]{"su","-c", "am start -n tech.lincaiqi.PhotoTimeFix/tech.lincaiqi.PhotoTimeFix.MainActivity"});
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
@@ -150,6 +160,10 @@ public class MainActivity extends Activity {
                                 pd.dismiss();
                             }
                         });
+
+                        Looper.prepare();
+                        Toast.makeText(MainActivity.this, "完成！", Toast.LENGTH_LONG).show();
+                        Looper.loop();
 
                     }
                 }).start();

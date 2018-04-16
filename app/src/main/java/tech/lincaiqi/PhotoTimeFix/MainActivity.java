@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -18,12 +19,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +39,12 @@ public class MainActivity extends Activity {
         startBtn = (Button) findViewById(R.id.startbutton);
         chooseBtn = (Button) findViewById(R.id.chooseButton);
         locateTv = (TextView) findViewById(R.id.locateText);
+
+        try {
+            Runtime.getRuntime().exec("su");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         chooseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,13 +87,12 @@ public class MainActivity extends Activity {
                             Matcher m = pa.matcher(time);
                             time = m.replaceAll("").trim();
                             String command;
-                            if (time.indexOf("20") != -1) {
+                            if (time.indexOf("20") != -1 && time.substring(time.indexOf("20")).length()>=12) {
                                 command = null;
                                 command = "touch -t " + time.substring(time.indexOf("20"), time.indexOf("20") + 12) + " " + f.getAbsolutePath();
                                 Log.d("shell", command);
-
                                 try {
-                                    Runtime.getRuntime().exec(new String[]{"/system/bin/su","-c", command});
+                                    Runtime.getRuntime().exec(new String[]{"su","-c", command});
                                     /*String data = null;
                                     BufferedReader ie = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
                                     BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
@@ -119,13 +121,17 @@ public class MainActivity extends Activity {
                                 }
                             });
 
-                            /*try {
-                                Thread.sleep(500);
+                            try {
+                                Thread.sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
-                            }*/
+                            }
 
                         }
+
+                        Looper.prepare();
+                        Toast.makeText(MainActivity.this, "完成！", Toast.LENGTH_LONG).show();
+                        Looper.loop();
 
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
@@ -151,7 +157,7 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("关于")
-                .setMessage("测试")
+                .setMessage("这是一个简单的小程序用来修复手机中的照片时间错误\n使用前请关闭root授权提示，并不要进行其他操作以免机器卡死\n在Gayhub上开源：https://github.com/singleNeuron/PhotoTimeFixforAndroid\n酷安ID：@神经元")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

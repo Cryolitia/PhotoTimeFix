@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ public class MainActivity extends Activity {
     private Button startBtn;
     private Button chooseBtn;
     private TextView locateTv;
+    private EditText start;
+    private EditText end;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class MainActivity extends Activity {
         startBtn = (Button) findViewById(R.id.startbutton);
         chooseBtn = (Button) findViewById(R.id.chooseButton);
         locateTv = (TextView) findViewById(R.id.locateText);
+        start = (EditText) findViewById(R.id.start);
+        end = (EditText) findViewById(R.id.end);
 
         try {
             Runtime.getRuntime().exec("su");
@@ -59,8 +64,10 @@ public class MainActivity extends Activity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final int startnum = Integer.valueOf(start.getText().toString());
+                final int endnum = Integer.valueOf(end.getText().toString());
                 File file = new File(locateTv.getText().toString());
-                Log.d("EditText", locateTv.getText().toString());
+                //Log.d("EditText", locateTv.getText().toString());
                 if (!file.exists()) {
                     Toast.makeText(MainActivity.this, "路径不存在", Toast.LENGTH_LONG).show();
                     return;
@@ -78,38 +85,47 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
 
+                        int i = 0;
+
                         for (File f : files) {
                             Log.d("File:", f.getName());
-
-                            String time = f.getName();
-                            String regEx = "[^0-9]";
-                            Pattern pa = Pattern.compile(regEx);
-                            Matcher m = pa.matcher(time);
-                            time = m.replaceAll("").trim();
-                            String command;
-                            if (time.indexOf("20") != -1 && time.substring(time.indexOf("20")).length()>=12) {
-                                command = null;
-                                command = "touch -t " + time.substring(time.indexOf("20"), time.indexOf("20") + 12) + " " + f.getAbsolutePath();
-                                Log.d("shell", command);
+                            i ++;
+                            if (i>=startnum&&(endnum==0||i<=endnum)) {
+                                String time = f.getName();
+                                String regEx = "[^0-9]";
+                                Pattern pa = Pattern.compile(regEx);
+                                Matcher m = pa.matcher(time);
+                                time = m.replaceAll("").trim();
+                                String command;
+                                if (time.indexOf("20") != -1 && time.substring(time.indexOf("20")).length()>=12) {
+                                    command = null;
+                                    command = "touch -t " + time.substring(time.indexOf("20"), time.indexOf("20") + 12) + " " + f.getAbsolutePath();
+                                    Log.d("shell", command);
+                                    try {
+                                        Runtime.getRuntime().exec(new String[]{"su","-c", command});
+                                        /*String data = null;
+                                        BufferedReader ie = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+                                        BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                                        String error = null;
+                                        while ((error = ie.readLine()) != null
+                                                && !error.equals("null")) {
+                                            data += error + "\n";
+                                        }
+                                        String line = null;
+                                        while ((line = in.readLine()) != null
+                                                && !line.equals("null")) {
+                                            data += line + "\n";
+                                        }
+                                        if (data != null && data != "") {
+                                            Log.e("touch", data);
+                                        }*/
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                                 try {
-                                    Runtime.getRuntime().exec(new String[]{"su","-c", command});
-                                    /*String data = null;
-                                    BufferedReader ie = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-                                    BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-                                    String error = null;
-                                    while ((error = ie.readLine()) != null
-                                            && !error.equals("null")) {
-                                        data += error + "\n";
-                                    }
-                                    String line = null;
-                                    while ((line = in.readLine()) != null
-                                            && !line.equals("null")) {
-                                        data += line + "\n";
-                                    }
-                                    if (data != null && data != "") {
-                                        Log.e("touch", data);
-                                    }*/
-                                } catch (IOException e) {
+                                    Thread.sleep(100);
+                                } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -121,11 +137,6 @@ public class MainActivity extends Activity {
                                 }
                             });
 
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
 
                         }
 

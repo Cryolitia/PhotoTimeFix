@@ -21,8 +21,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +39,9 @@ public class MainActivity extends Activity {
     private EditText end;
     private CheckBox checkBox;
 
+    InputStreamReader inputStreamReader;
+    BufferedReader bufferedReader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -46,13 +53,15 @@ public class MainActivity extends Activity {
         locateTv = (TextView) findViewById(R.id.locateText);
         start = (EditText) findViewById(R.id.start);
         end = (EditText) findViewById(R.id.end);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
 
-        try {
+        /*try {
             Runtime.getRuntime().exec("su");
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+
+
 
         chooseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,60 +100,53 @@ public class MainActivity extends Activity {
 
                         int i = 0;
 
-                        for (File f : files) {
-                            Log.d("File:", f.getName());
-                            i ++;
-                            if (i>=startnum&&(endnum==0||i<=endnum)) {
-                                String time = f.getName();
-                                String regEx = "[^0-9]";
-                                Pattern pa = Pattern.compile(regEx);
-                                Matcher m = pa.matcher(time);
-                                time = m.replaceAll("").trim();
-                                String command;
-                                if (time.indexOf("20") != -1 && time.substring(time.indexOf("20")).length()>=12) {
-                                    command = null;
-                                    command = "touch -t " + time.substring(time.indexOf("20"), time.indexOf("20") + 12) + " " + f.getAbsolutePath();
-                                    Log.d("shell", command);
-                                    try {
-                                        Runtime.getRuntime().exec(new String[]{"su","-c", command});
-                                        /*String data = null;
-                                        BufferedReader ie = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-                                        BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-                                        String error = null;
-                                        while ((error = ie.readLine()) != null
-                                                && !error.equals("null")) {
-                                            data += error + "\n";
+                        try {
+                            Process process = Runtime.getRuntime().exec("su");
+
+                            for (File f : files) {
+                                Log.d("File:", f.getName());
+                                i++;
+
+                                if (i >= startnum && (endnum == 0 || i <= endnum)) {
+                                    String time = f.getName();
+                                    String regEx = "[^0-9]";
+                                    Pattern pa = Pattern.compile(regEx);
+                                    Matcher m = pa.matcher(time);
+                                    time = m.replaceAll("").trim();
+                                    String command;
+                                    if (time.indexOf("20") != -1 && time.substring(time.indexOf("20")).length() >= 12) {
+                                        command = "touch -t " + time.substring(time.indexOf("20"), time.indexOf("20") + 12) + " " + f.getAbsolutePath();
+                                        Log.d("shell", command);
+
+                                        //Runtime.getRuntime().exec(new String[]{"su","-c", command});
+
+
+                                        DataOutputStream dataOutputStream = new DataOutputStream(process.getOutputStream());
+                                        dataOutputStream.writeBytes(command + "\n");
+                                        dataOutputStream.flush();
+
+
+                                        try {
+                                            Thread.sleep(100);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
                                         }
-                                        String line = null;
-                                        while ((line = in.readLine()) != null
-                                                && !line.equals("null")) {
-                                            data += line + "\n";
-                                        }
-                                        if (data != null && data != "") {
-                                            Log.e("touch", data);
-                                        }*/
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
                                     }
+
+                                    MainActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pd.incrementProgressBy(1);
+                                        }
+                                    });
                                 }
-                                try {
-                                    Thread.sleep(100);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+
                             }
 
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pd.incrementProgressBy(1);
-                                }
-                            });
 
 
-                        }
 
-                        if (check == true) {
+                        /*if (check == true) {
                             try {
                                 Runtime.getRuntime().exec(new String[]{"su","-c", "am force-stop com.android.systemui"});
                                 Runtime.getRuntime().exec(new String[]{"su","-c", "am force-stop tech.lincaiqi.PhotoTimeFix"});
@@ -154,18 +156,30 @@ public class MainActivity extends Activity {
                             }
                         }
 
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                pd.dismiss();
-                            }
-                        });
+                        try {
+                            dataOutputStream.close();
+                            dataInputStream.close();
+                            process.waitFor();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }*/
 
-                        Looper.prepare();
-                        Toast.makeText(MainActivity.this, "完成！", Toast.LENGTH_LONG).show();
-                        Looper.loop();
 
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pd.dismiss();
+                                }
+                            });
+
+                            Looper.prepare();
+                            Toast.makeText(MainActivity.this, "完成！", Toast.LENGTH_LONG).show();
+                            Looper.loop();
+                        }catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
+
                 }).start();
             }
         });
@@ -182,7 +196,7 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("关于")
-                .setMessage("这是一个简单的小程序用来修复手机中的照片时间错误\n使用前请关闭root授权提示，并不要进行其他操作以免机器卡死\n在Gayhub上开源：https://github.com/singleNeuron/PhotoTimeFixforAndroid\n酷安ID：@神经元")
+                .setMessage("这是一个简单的小程序用来修复手机中的照片时间错误\n使用时请尽量不要进行其他操作以免机器卡死\n在Gayhub上开源：https://github.com/singleNeuron/PhotoTimeFixforAndroid\n酷安ID：@神经元")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

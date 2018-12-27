@@ -94,7 +94,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
-            android:text="选定范围以避免大量数据造成手机卡顿" />
+            android:text="可选定范围以避免大量数据造成手机卡顿" />
 
         <TextView
             android:id="@+id/textView4"

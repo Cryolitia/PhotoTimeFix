@@ -3,12 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     defaultConfig {
-        applicationId "tech.lincaiqi.PhotoTimeFix"
+        applicationId "cn.nexus6p.PhotoTimeFix"
         minSdkVersion 21
         targetSdkVersion 21
-        versionCode 5
-        versionName '1.4'
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 6
+        versionName '2.0'
     }
     buildTypes {
         release {
@@ -24,7 +23,4 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }

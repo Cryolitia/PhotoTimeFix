@@ -280,6 +280,21 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
+    @JavascriptInterface
+    public void openCA1() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://www.coolapk.com/u/501992"));
+        startActivity(intent);
+    }
+
+    @JavascriptInterface
+    public void openCA2() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://www.coolapk.com/u/603406"));
+        startActivity(intent);
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {

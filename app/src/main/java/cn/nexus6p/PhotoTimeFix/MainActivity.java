@@ -27,25 +27,26 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.io.File;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
 
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    boolean support = true;
     private TextView locateTv;
     private EditText start;
     private EditText end;
     private RadioGroup radioGroup;
     private EditText editFormat;
-
-    SharedPreferences preferences;
-    SharedPreferences.Editor editor;
-
-    boolean support = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +57,9 @@ public class MainActivity extends Activity {
         preferences = getPreferences(Context.MODE_PRIVATE);
         editor = preferences.edit();
 
-        if (preferences.getBoolean("iffirst",true)) {
+        if (preferences.getBoolean("iffirst", true)) {
             showAbout();
-            editor.putBoolean("iffirst",false);
+            editor.putBoolean("iffirst", false);
             editor.apply();
         }
 
@@ -70,140 +71,177 @@ public class MainActivity extends Activity {
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         editFormat = (EditText) findViewById(R.id.editFormat);
 
-        locateTv.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().getPath()+"/DCIM/Camera"));
-        radioGroup.check(preferences.getInt("mode",R.id.radioButton));
+        locateTv.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera"));
+        radioGroup.check(preferences.getInt("mode", R.id.radioButton));
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                editor.putInt("mode",i);
-                editor.apply();
-            }
+        radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
+            editor.putInt("mode", i);
+            editor.apply();
         });
 
-        chooseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "由于系统限制(其实是我懒)，请选择文件夹内任意一张图片", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, 0);
-            }
+        chooseBtn.setOnClickListener(view -> {
+            Toast.makeText(MainActivity.this, "由于系统限制(其实是我懒)，请选择文件夹内任意一张图片", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Intent.ACTION_PICK, null);
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            startActivityForResult(intent, 0);
         });
 
-        startBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final int startnum = Integer.valueOf(start.getText().toString());
-                final int endnum = Integer.valueOf(end.getText().toString());
-                File file = new File(locateTv.getText().toString());
-                //Log.d("EditText", locateTv.getText().toString());
-                if (!file.exists()) {
-                    Toast.makeText(MainActivity.this, "路径不存在", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                editor.putString("locate", String.valueOf(locateTv.getText()));
-                editor.apply();
-                final File[] files = file.listFiles();
-                final ProgressDialog pd = new ProgressDialog(MainActivity.this);
-                pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                pd.setCancelable(false);
-                pd.setCanceledOnTouchOutside(false);
-                pd.setMax(files.length);
-                pd.setTitle("进度");
-                pd.show();
+        startBtn.setOnClickListener(view -> {
+            final int startnum = Integer.valueOf(start.getText().toString());
+            final int endnum = Integer.valueOf(end.getText().toString());
+            File file = new File(locateTv.getText().toString());
+            //Log.d("EditText", locateTv.getText().toString());
+            if (!file.exists()) {
+                Toast.makeText(MainActivity.this, "路径不存在", Toast.LENGTH_LONG).show();
+                return;
+            }
+            editor.putString("locate", String.valueOf(locateTv.getText()));
+            editor.apply();
+            final File[] files = file.listFiles();
+            final ProgressDialog pd = new ProgressDialog(MainActivity.this);
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setCancelable(false);
+            pd.setCanceledOnTouchOutside(false);
+            pd.setMax(files.length);
+            pd.setTitle("进度");
+            pd.show();
 
-                        int i = 0;
+            new Thread(() -> {
 
-                        if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton2) {
-                            try {
+                int i = 0;
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                Log.d("button", String.valueOf(radioGroup.getCheckedRadioButtonId()));
+                Log.d("button", String.valueOf(R.id.radioButton2));
+                DataOutputStream os = null;
+                Process suProcess = null;
+
+                if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton2) {
+
+                    boolean retval;
+
+                    try {
+                        suProcess = Runtime.getRuntime().exec("su");
+
+                        os = new DataOutputStream(suProcess.getOutputStream());
+                        DataInputStream osRes = new DataInputStream(suProcess.getInputStream());
+
+                        // Getting the id of the current user to check if this is root
+                        os.writeBytes("id\n");
+                        os.flush();
+
+                        String currUid = osRes.readLine();
+                        boolean exitSu;
+                        if (null == currUid) {
+                            retval = false;
+                            exitSu = false;
+                            Log.d("ROOT", "Can't get root access or denied by user");
+                        } else if (currUid.contains("uid=0")) {
+                            retval = true;
+                            exitSu = true;
+                            Log.d("ROOT", "Root access granted");
+                        } else {
+                            retval = false;
+                            exitSu = true;
+                            Log.d("ROOT", "Root access rejected: " + currUid);
                         }
 
-                        String format = "yyyyMMddHHmm";
-                        long targetTimeLongType;
+                    } catch (Exception e) {
 
-                        if (!editFormat.getText().toString().equals("")) {
-                            format = editFormat.getText().toString();
-                        }
-
-                        for (File f : files) {
-                            Log.d("File:", f.getName());
-                            i++;
-
-                            if (i >= startnum && (endnum == 0 || i <= endnum)) {
-                                String time = f.getName();
-                                String regEx = "[^0-9]";
-                                Pattern pa = Pattern.compile(regEx);
-                                Matcher m = pa.matcher(time);
-                                time = m.replaceAll("").trim();
-                                if (time.contains("20") && time.substring(time.indexOf("20")).length() >= 12) {
-                                    if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton) {
-                                        try {
-                                            String targetTime = time.substring(time.indexOf("20"), time.indexOf("20") + 12);
-                                            if (format.equals("yyyyMMddHHmm")) {
-                                                targetTimeLongType = new SimpleDateFormat(format, Locale.getDefault()).parse(targetTime).getTime();
-                                            } else {
-                                                targetTimeLongType = new SimpleDateFormat(format, Locale.getDefault()).parse(f.getName()).getTime();
-                                            }
-                                            if (f.setLastModified(targetTimeLongType)) {
-                                                Log.d("succese", new Date(f.lastModified()).toString());
-                                            } else {
-                                                Log.d("fail", String.valueOf(targetTimeLongType));
-                                                support = false;
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    } else {
-                                        try {
-
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-
-                                    /*try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }*/
-                                }
-
-                                MainActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        pd.incrementProgressBy(1);
-                                    }
-                                });
-                            } else if (i>endnum) break;
-
-                        }
-
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                pd.dismiss();
-                                if (!support) {
-                                    Toast.makeText(MainActivity.this, "您的系统极有可能不支持此操作，请更换操作模式", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-
-                        Looper.prepare();
-                        Toast.makeText(MainActivity.this, "完成！", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
+                        retval = false;
+                        Log.d("ROOT", "Root access rejected [" + e.getClass().getName() + "] : " + e.getMessage());
+                        e.printStackTrace();
                     }
 
-                }).start();
-            }
+                    if (!retval) {
+                        MainActivity.this.runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this, "请检查root权限", Toast.LENGTH_LONG).show();
+                            pd.dismiss();
+                        });
+                        /*try {
+                            os.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }*/
+                        return;
+                    }
+
+                }
+
+                String format = editFormat.getText().toString().equals("") ? "yyyyMMddHHmm" : editFormat.getText().toString();
+                long targetTimeLongType;
+
+                for (File f : files) {
+                    Log.d("File:", f.getName());
+                    i++;
+
+                    if (i >= startnum && (endnum == 0 || i <= endnum)) {
+                        String time = f.getName();
+                        String regEx = "[^0-9]";
+                        Pattern pa = Pattern.compile(regEx);
+                        Matcher m = pa.matcher(time);
+                        time = m.replaceAll("").trim();
+                        if (time.contains("20") && time.substring(time.indexOf("20")).length() >= 12) {
+                            String targetTime = time.substring(time.indexOf("20"), time.indexOf("20") + 12);
+                            if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton) {
+                                try {
+                                    targetTimeLongType = format.equals("yyyyMMddHHmm") ? new SimpleDateFormat(format, Locale.getDefault()).parse(targetTime).getTime() : new SimpleDateFormat(format, Locale.getDefault()).parse(f.getName()).getTime();
+                                    if (f.setLastModified(targetTimeLongType)) {
+                                        Log.d("succese", new Date(f.lastModified()).toString());
+                                    } else {
+                                        Log.d("fail", String.valueOf(targetTimeLongType));
+                                        support = false;
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                try {
+                                    String command = "touch -t " + targetTime + " " + f.getAbsolutePath();
+                                    Log.d("command",command);
+                                    assert os != null;
+                                    os.writeBytes(command + "\n");
+                                    os.flush();
+                                    //suProcess.waitFor();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            /*try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }*/
+                        }
+
+                        MainActivity.this.runOnUiThread(() -> pd.incrementProgressBy(1));
+                    } else if (i > endnum) break;
+
+                }
+
+                if (os!=null) {
+                    try {
+                        os.writeBytes("exit\n");
+                        //os.flush();
+                        //os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                MainActivity.this.runOnUiThread(() -> {
+                    pd.dismiss();
+                    if (!support) {
+                        Toast.makeText(MainActivity.this, "您的系统极有可能不支持此操作，请更换操作模式", Toast.LENGTH_LONG).show();
+                    }
+                }
+                );
+
+                Looper.prepare();
+                Toast.makeText(MainActivity.this, "完成！", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }).start();
         });
 
     }
@@ -223,20 +261,20 @@ public class MainActivity extends Activity {
     @SuppressLint("SetJavaScriptEnabled")
     public void showAbout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.about,null);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.about, null);
         WebView webview = (WebView) view.findViewById(R.id.webview);
         webview.setWebViewClient(new WebViewClient());
         webview.loadUrl("file:///android_asset/about.html");
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webview.addJavascriptInterface(this,"openGit");
+        webview.addJavascriptInterface(this, "openGit");
         builder.setView(view);
         builder.setPositiveButton("确定", null);
         builder.show();
     }
 
     @JavascriptInterface
-    public void openGit () {
+    public void openGit() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("https://github.com/singleNeuron/PhotoTimeFixforAndroid"));
         startActivity(intent);

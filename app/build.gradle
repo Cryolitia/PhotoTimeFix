@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     defaultConfig {
-        applicationId "cn.nexus6p.PhotoTimeFix"
+        applicationId "tech.lincaiqi.PhotoTimeFix"
         minSdkVersion 21
         targetSdkVersion 21
-        versionCode 6
+        versionCode 7
         versionName '2.0'
     }
     buildTypes {
@@ -26,5 +26,4 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }

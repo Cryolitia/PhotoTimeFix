@@ -1,4 +1,4 @@
-package cn.nexus6p.PhotoTimeFix;
+package tech.lincaiqi.PhotoTimeFix;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
@@ -114,11 +113,11 @@ public class MainActivity extends Activity {
                 Log.d("button", String.valueOf(radioGroup.getCheckedRadioButtonId()));
                 Log.d("button", String.valueOf(R.id.radioButton2));
                 DataOutputStream os = null;
-                Process suProcess = null;
+                Process suProcess;
 
                 if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton2) {
 
-                    boolean retval;
+                    boolean retValue;
 
                     try {
                         suProcess = Runtime.getRuntime().exec("su");
@@ -133,27 +132,27 @@ public class MainActivity extends Activity {
                         String currUid = osRes.readLine();
                         boolean exitSu;
                         if (null == currUid) {
-                            retval = false;
-                            exitSu = false;
+                            retValue = false;
+                            //exitSu = false;
                             Log.d("ROOT", "Can't get root access or denied by user");
                         } else if (currUid.contains("uid=0")) {
-                            retval = true;
-                            exitSu = true;
+                            retValue = true;
+                            //exitSu = true;
                             Log.d("ROOT", "Root access granted");
                         } else {
-                            retval = false;
-                            exitSu = true;
+                            retValue = false;
+                            //exitSu = true;
                             Log.d("ROOT", "Root access rejected: " + currUid);
                         }
 
                     } catch (Exception e) {
 
-                        retval = false;
+                        retValue = false;
                         Log.d("ROOT", "Root access rejected [" + e.getClass().getName() + "] : " + e.getMessage());
                         e.printStackTrace();
                     }
 
-                    if (!retval) {
+                    if (!retValue) {
                         MainActivity.this.runOnUiThread(() -> {
                             Toast.makeText(MainActivity.this, "请检查root权限", Toast.LENGTH_LONG).show();
                             pd.dismiss();
@@ -177,10 +176,7 @@ public class MainActivity extends Activity {
 
                     if (i >= startnum && (endnum == 0 || i <= endnum)) {
                         String time = f.getName();
-                        String regEx = "[^0-9]";
-                        Pattern pa = Pattern.compile(regEx);
-                        Matcher m = pa.matcher(time);
-                        time = m.replaceAll("").trim();
+                        time = Pattern.compile("[^0-9]").matcher(time).replaceAll("").trim();
                         if (time.contains("20") && time.substring(time.indexOf("20")).length() >= 12) {
                             String targetTime = time.substring(time.indexOf("20"), time.indexOf("20") + 12);
                             if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton) {

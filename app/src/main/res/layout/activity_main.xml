@@ -1,125 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.nexus6p.PhotoTimeFix.MainActivity"
-    tools:layout_editor_absoluteY="81dp">
+    tools:context="tech.lincaiqi.PhotoTimeFix.MainActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
+        android:layout_centerInParent="true"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:ignore="UselessParent">
 
         <EditText
             android:id="@+id/locateText"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="match_parent"
             android:ems="10"
-            android:hint="请选择一个文件夹"
+            android:hint="@string/selectFolder"
             android:inputType="textPersonName"
             android:singleLine="true"
-            android:text="/sdcard/DCIM/Camera"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
+            android:text="@string/sdcard_dcim_camera" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="78dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="起始位置" />
+                android:text="@string/startLocation" />
 
             <EditText
                 android:id="@+id/start"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="0"
+                android:hint="@string/_0"
                 android:inputType="number"
-                android:text="0" />
+                android:text="@string/_0" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="26dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="结束位置" />
+                android:text="@string/endLocation" />
 
             <EditText
                 android:id="@+id/end"
-                android:layout_width="163dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="0"
+                android:hint="@string/_0"
                 android:inputType="number"
-                android:text="0" />
+                android:text="@string/_0" />
 
         </LinearLayout>
 
         <RadioGroup
             android:id="@+id/radioGroup"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:checkedButton="@+id/radioButton"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent">
+            android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/radioButton"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="模式一：Java"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="405dp" />
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/radioButton2"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="模式二：Shell" />
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/java" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/shell"
+                    tools:layout_width="match_parent" />
+
+            </LinearLayout>
 
         </RadioGroup>
 
@@ -130,51 +111,43 @@
 
             <TextView
                 android:id="@+id/textView5"
-                android:layout_width="102dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="手动输入格式" />
+                android:text="@string/format" />
 
             <EditText
                 android:id="@+id/editFormat"
-                android:layout_width="203dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="IMG_yyyyMMddHHmm_HHmmss.jpg"
+                android:hint="@string/img_yyyymmddhhmm_hhmmss_jpg"
                 android:inputType="textPersonName" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/chooseButton"
+                style="?android:attr/buttonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/selectFolder" />
+
+            <Button
+                android:id="@+id/startbutton"
+                style="?android:attr/buttonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/start" />
         </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="68dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/chooseButton"
-            style="?android:attr/buttonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="选择文件夹" />
-
-        <Button
-            android:id="@+id/startbutton"
-            style="?android:attr/buttonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="开始" />
-    </LinearLayout>
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

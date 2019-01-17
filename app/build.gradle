@@ -1,13 +1,16 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 28
     defaultConfig {
         applicationId "tech.lincaiqi.PhotoTimeFix"
         minSdkVersion 21
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 21
-        versionCode 7
-        versionName '2.0'
+        versionCode 8
+        versionName '3.0'
     }
     buildTypes {
         release {
@@ -15,7 +18,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     productFlavors {
     }
     compileOptions {
@@ -26,4 +29,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.11"
+    implementation "org.jetbrains.anko:anko-common:0.10.8"
 }

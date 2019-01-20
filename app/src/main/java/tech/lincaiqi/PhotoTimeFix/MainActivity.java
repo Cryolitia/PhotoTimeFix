@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.support.customtabs.CustomTabsIntent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,37 +39,37 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
 
-    SharedPreferences preferences;
-    SharedPreferences.Editor editor;
-    boolean support = true;
+    private SharedPreferences.Editor editor;
+    private boolean support = true;
     private TextView locateTv;
     private EditText start;
     private EditText end;
     private RadioGroup radioGroup;
     private EditText editFormat;
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
         editor = preferences.edit();
 
-        if (preferences.getBoolean("iffirst", true)) {
+        if (preferences.getBoolean("ifFirst", true)) {
             showAbout();
-            editor.putBoolean("iffirst", false);
+            editor.putBoolean("ifFirst", false);
             editor.apply();
         }
 
-        Button startBtn = (Button) findViewById(R.id.startbutton);
-        Button chooseBtn = (Button) findViewById(R.id.chooseButton);
-        locateTv = (TextView) findViewById(R.id.locateText);
-        start = (EditText) findViewById(R.id.start);
-        end = (EditText) findViewById(R.id.end);
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        editFormat = (EditText) findViewById(R.id.editFormat);
+        Button startBtn = findViewById(R.id.startbutton);
+        Button chooseBtn = findViewById(R.id.chooseButton);
+        locateTv = findViewById(R.id.locateText);
+        start = findViewById(R.id.start);
+        end = findViewById(R.id.end);
+        radioGroup = findViewById(R.id.radioGroup);
+        editFormat = findViewById(R.id.editFormat);
 
         locateTv.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera"));
         radioGroup.check(preferences.getInt("mode", R.id.radioButton));
@@ -255,10 +256,10 @@ public class MainActivity extends Activity {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    public void showAbout() {
+    private void showAbout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.about, null);
-        WebView webview = (WebView) view.findViewById(R.id.webview);
+        WebView webview = view.findViewById(R.id.webview);
         webview.setWebViewClient(new WebViewClient());
         webview.loadUrl("file:///android_asset/about.html");
         WebSettings webSettings = webview.getSettings();
@@ -270,26 +271,31 @@ public class MainActivity extends Activity {
     }
 
     @JavascriptInterface
-    public void openGit() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("https://github.com/singleNeuron/PhotoTimeFixforAndroid"));
-        startActivity(intent);
+    public  void openUrl(String url) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                .setShowTitle(true);
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this,Uri.parse(url));
     }
 
+    //作者：花生酱啊
+    //来源：CSDN
+    //原文：https://blog.csdn.net/u011286957/article/details/80824235
+    //版权声明：本文为博主原创文章，转载请附上博文链接！
     @JavascriptInterface
-    public void openCA1() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://www.coolapk.com/u/501992"));
-        startActivity(intent);
+    public void openCoolapk(String user) {
+        Intent intent = new Intent();
+        try {
+            //intent.setClassName("com.coolapk.market", "com.coolapk.market.view.AppLinkActivity");
+            intent.setAction("android.intent.action.VIEW");
+            intent.setData(Uri.parse("coolmarket://u/"+user));
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, "未安装酷安", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
-
-    @JavascriptInterface
-    public void openCA2() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://www.coolapk.com/u/603406"));
-        startActivity(intent);
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

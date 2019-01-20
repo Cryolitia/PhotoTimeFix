@@ -1,4 +1,4 @@
-package tech.lincaiqi.PhotoTimeFix;
+package tech.lincaiqi.photoTimeFix;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -36,8 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
-
-public class MainActivity extends Activity {
+/*
+public class core {
 
     private SharedPreferences.Editor editor;
     private boolean support = true;
@@ -162,7 +162,7 @@ public class MainActivity extends Activity {
                             os.close();
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }*/
+                        }
                         return;
                     }
 
@@ -209,7 +209,7 @@ public class MainActivity extends Activity {
                                 Thread.sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
-                            }*/
+                            }
                         }
 
                         MainActivity.this.runOnUiThread(() -> pd.incrementProgressBy(1));
@@ -326,4 +326,4 @@ public class MainActivity extends Activity {
         }
     }
 
-}
+}*/

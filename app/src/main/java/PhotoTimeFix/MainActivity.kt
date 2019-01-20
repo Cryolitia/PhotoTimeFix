@@ -1,20 +1,21 @@
 package photoTimeFix
 
-import android.app.Activity
 import android.os.Bundle
-import tech.lincaiqi.photoTimeFix.R
+import tech.lincaiqi.PhotoTimeFix.R
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import  kotlinx.android.synthetic.main.activity_main.*
+import tech.lincaiqi.PhotoTimeFix.Core
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mFragmentList : MutableList<Fragment>
     private lateinit var mTitleList : MutableList<String>
+    private lateinit var coreK : CoreK
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +24,17 @@ class MainActivity : AppCompatActivity() {
         initFragment()
         mVp.adapter = PagerAdapter(supportFragmentManager, mFragmentList,mTitleList)
         mTb.setupWithViewPager(mVp)
+        coreK = CoreK(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.info,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        coreK.showAbout()
+        return true
     }
 
     private  fun initTitle() {
@@ -37,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private  fun initFragment() {
         mFragmentList = ArrayList()
         mFragmentList.add(Fragment1())
+        mFragmentList.add(Fragment2())
     }
 
 }

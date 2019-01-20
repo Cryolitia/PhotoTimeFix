@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "tech.lincaiqi.photoTimeFix"
+        applicationId "tech.lincaiqi.PhotoTimeFix"
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 21

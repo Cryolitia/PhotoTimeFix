@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">照片时间修复</string>
-    <string name="selectFolder">请选择一个文件夹</string>
+    <string name="selectFolder">选择文件夹</string>
     <string name="sdcard_dcim_camera">/sdcard/DCIM/Camera</string>
     <string name="startLocation">起始位置</string>
     <string name="_0">0</string>
@@ -11,4 +11,7 @@
     <string name="img_yyyymmddhhmm_hhmmss_jpg">IMG_yyyyMMddHHmm_HHmmss.jpg</string>
     <string name="start">开始</string>
     <string name="about">关于</string>
+    <string name="fresh">刷新媒体库</string>
+    <string name="selectFile">选择文件</string>
+    <string name="selectDate">选择日期时间</string>
 </resources>

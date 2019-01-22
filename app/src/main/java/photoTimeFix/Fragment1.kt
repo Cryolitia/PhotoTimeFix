@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,14 +48,16 @@ class Fragment1 : Fragment() {
         }
 
         val startBtn = view.findViewById<Button>(R.id.startButton)
-        val startNum : Int = Integer.valueOf(view.findViewById<EditText>(R.id.start).text.toString())
-        val endNum : Int = Integer.valueOf(view.findViewById<EditText>(R.id.end).text.toString())
-        val fileString : String = view.findViewById<EditText>(R.id.locateText).text.toString()
-        val radioGroup = view.findViewById<RadioGroup>(R.id.radioGroup)
-        val editFormat = view.findViewById<EditText>(R.id.editFormat)
-        val format : String = if (editFormat.text.toString().equals(""))  "yyyyMMddHHmm" else editFormat.text.toString()
         startBtn.setOnClickListener {
-            core.process(context, startNum, endNum, fileString, editor, radioGroup, R.id.radioButton, R.id.radioButton2, activity, format)
+            val startNum : Int = Integer.valueOf(view.findViewById<EditText>(R.id.start).text.toString())
+            val endNum : Int = Integer.valueOf(view.findViewById<EditText>(R.id.end).text.toString())
+            val fileString : String = view.findViewById<EditText>(R.id.locateText).text.toString()
+            val editFormat = view.findViewById<EditText>(R.id.editFormat)
+            val format : String = if (editFormat.text.toString().equals(""))  "yyyyMMddHHmm" else editFormat.text.toString()
+            val radio : Boolean = view.findViewById<RadioGroup>(R.id.radioGroup).checkedRadioButtonId == R.id.radioButton
+            Log.d("radio", view.findViewById<RadioGroup>(R.id.radioGroup).checkedRadioButtonId.toString())
+            Log.d("radio",R.id.radioButton.toString())
+            core.process(context, startNum, endNum, fileString, editor, radio, activity, format)
         }
 
         return view

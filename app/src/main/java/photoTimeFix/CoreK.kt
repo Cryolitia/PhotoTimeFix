@@ -19,15 +19,15 @@ import android.widget.RadioGroup
 import org.jetbrains.anko.longToast
 import tech.lincaiqi.PhotoTimeFix.R
 
-class CoreK (private var context: Context) {
+class CoreK(private var context: Context) {
 
     fun initFragment(view: View, preferences: SharedPreferences, editor: SharedPreferences.Editor) {
         val locateText = view.findViewById<EditText>(R.id.locateText)
         locateText.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera"))
         val radioGroup = view.findViewById<RadioGroup>(R.id.radioGroup)
-        radioGroup.check(preferences.getInt("mode",R.id.radioButton))
+        radioGroup.check(preferences.getInt("mode", R.id.radioButton))
         radioGroup.setOnCheckedChangeListener { _, i ->
-            editor.putInt("mode",i)
+            editor.putInt("mode", i)
             editor.apply()
         }
     }
@@ -35,21 +35,26 @@ class CoreK (private var context: Context) {
     @SuppressLint("SetJavaScriptEnabled", "InflateParams")
     fun showAbout() {
         val builder = AlertDialog.Builder(context)
-        val view = LayoutInflater.from(context).inflate(R.layout.about,null)
-        val webview : WebView = view.findViewById(R.id.webview)
-        webview.webViewClient = WebViewClient()
-        webview.loadUrl("file:///android_asset/about.html")
-        webview.settings.javaScriptEnabled = true
-        webview.addJavascriptInterface(this,"openGit")
-        builder.setView(view)
-        builder.setPositiveButton("确定",null)
+        try {
+            val view = LayoutInflater.from(context).inflate(R.layout.about, null)
+            val webview: WebView = view.findViewById(R.id.webview)
+            webview.webViewClient = WebViewClient()
+            webview.loadUrl("file:///android_asset/about.html")
+            webview.settings.javaScriptEnabled = true
+            webview.addJavascriptInterface(this, "openGit")
+            builder.setView(view)
+        } catch (e: Exception) {
+            builder.setMessage("加载Webview错误，已停止显示帮助窗口。\n该错误并不影响正常功能运行，且开发者仅在模拟器上遇到过，如果出现此对话框请与开发者联系。")
+            e.printStackTrace()
+        }
+        builder.setPositiveButton("确定", null)
         builder.show()
     }
 
     @JavascriptInterface
-    fun openUrl(url : String) {
+    fun openUrl(url: String) {
         val builder = CustomTabsIntent.Builder()
-        builder.setToolbarColor(ContextCompat.getColor(context,R.color.colorPrimaryDark))
+        builder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
                 .setShowTitle(true)
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(context, Uri.parse(url))

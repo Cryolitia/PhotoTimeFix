@@ -22,29 +22,48 @@
             android:singleLine="true"
             android:text="@string/sdcard_dcim_camera" />
 
-        <RadioGroup
-            android:id="@+id/radioGroup"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checkedButton="@+id/radioButton"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/radioButton"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nowdatetime" />
+
+            <EditText
+                android:id="@+id/nowDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/java" />
+                android:ems="10"
+                android:enabled="false"
+                tools:ignore="LabelFor"
+                android:inputType="datetime"/>
 
-            <RadioButton
-                android:id="@+id/radioButton2"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/format" />
+
+            <EditText
+                android:id="@+id/editFormat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/shell"/>
+                android:ems="10"
+                android:hint="@string/img_yyyymmddhhmm_hhmmss_jpg"
+                android:inputType="textPersonName" />
 
-
-        </RadioGroup>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,6 +88,30 @@
                 android:inputType="text" />
 
         </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/radioButton"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/java" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/shell" />
+
+
+        </RadioGroup>
 
         <LinearLayout
             android:layout_width="match_parent"

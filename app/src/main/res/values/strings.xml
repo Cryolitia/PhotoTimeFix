@@ -10,8 +10,9 @@
     <string name="format">手动输入格式</string>
     <string name="img_yyyymmddhhmm_hhmmss_jpg">IMG_yyyyMMddHHmm_HHmmss.jpg</string>
     <string name="start">开始</string>
-    <string name="about">关于</string>
+    <string name="about">帮助</string>
     <string name="fresh">刷新媒体库</string>
     <string name="selectFile">选择文件</string>
     <string name="selectDate">选择日期时间</string>
+    <string name="nowdatetime">当前日期时间</string>
 </resources>

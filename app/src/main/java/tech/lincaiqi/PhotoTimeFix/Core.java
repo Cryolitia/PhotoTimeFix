@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.io.DataInputStream;
@@ -22,7 +21,7 @@ public class Core {
 
     private boolean support = true;
 
-    public void process(Context context, int startnum, int endnum, String fileString, SharedPreferences.Editor editor, RadioGroup radioGroup, int radioID1, int radioID2, Activity activity, String format) {
+    public void process(Context context, int startnum, int endnum, String fileString, SharedPreferences.Editor editor, boolean radio, Activity activity, String format) {
         File file = new File(fileString);
         //Log.d("EditText", locateTv.getText().toString());
         if (!file.exists()) {
@@ -45,12 +44,11 @@ public class Core {
 
             int i = 0;
 
-            Log.d("button", String.valueOf(radioGroup.getCheckedRadioButtonId()));
-            Log.d("button", String.valueOf(radioID2));
+            Log.d("button", String.valueOf(radio));
             DataOutputStream os = null;
             Process suProcess;
 
-            if (radioGroup.getCheckedRadioButtonId() == radioID2) {
+            if (!radio) {
 
                 boolean retValue;
 
@@ -115,7 +113,7 @@ public class Core {
                     time = Pattern.compile("[^0-9]").matcher(time).replaceAll("").trim();
                     if (time.contains("20") && time.substring(time.indexOf("20")).length() >= 12) {
                         String targetTime = time.substring(time.indexOf("20"), time.indexOf("20") + 12);
-                        if (radioGroup.getCheckedRadioButtonId() == radioID1) {
+                        if (radio) {
                             try {
                                 targetTimeLongType = format.equals("yyyyMMddHHmm") ? new SimpleDateFormat(format, Locale.getDefault()).parse(targetTime).getTime() : new SimpleDateFormat(format, Locale.getDefault()).parse(f.getName()).getTime();
                                 if (f.setLastModified(targetTimeLongType)) {
@@ -131,7 +129,6 @@ public class Core {
                             try {
                                 String command = "touch -t " + targetTime + " " + f.getAbsolutePath();
                                 Log.d("command", command);
-                                assert os != null;
                                 os.writeBytes(command + "\n");
                                 os.flush();
                                 //suProcess.waitFor();
@@ -140,11 +137,11 @@ public class Core {
                             }
                         }
 
-                        try {
+                        /*try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                     }
 
                     activity.runOnUiThread(() -> pd.incrementProgressBy(1));

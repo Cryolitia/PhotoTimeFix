@@ -21,15 +21,13 @@ public class Core {
 
     private boolean support = true;
 
-    public void process(Context context, int startnum, int endnum, String fileString, SharedPreferences.Editor editor, boolean radio, Activity activity, String format) {
+    public void process(Context context, int startnum, int endnum, String fileString, boolean radio, Activity activity, String format) {
         File file = new File(fileString);
         //Log.d("EditText", locateTv.getText().toString());
         if (!file.exists()) {
             Toast.makeText(context, "路径不存在", Toast.LENGTH_LONG).show();
             return;
         }
-        editor.putString("locate", fileString);
-        editor.apply();
         final File[] files = file.listFiles();
         final ProgressDialog pd = new ProgressDialog(context);
 

@@ -8,9 +8,10 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:orientation="vertical"
-        tools:ignore="UselessParent">
+        tools:ignore="UselessParent"
+        android:layout_marginTop="50dp">
 
         <EditText
             android:id="@+id/locateText"
@@ -20,7 +21,7 @@
             android:hint="@string/selectFile"
             android:inputType="textPersonName"
             android:singleLine="true"
-            android:text="@string/sdcard_dcim_camera" />
+            android:text="" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,21 +72,21 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/dateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/selectDate" />
 
             <EditText
-                android:id="@+id/editFormat2"
+                android:id="@+id/choseDateEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
                 android:enabled="false"
                 tools:ignore="LabelFor"
-                android:inputType="text" />
+                android:inputType="datetime" />
 
         </LinearLayout>
 

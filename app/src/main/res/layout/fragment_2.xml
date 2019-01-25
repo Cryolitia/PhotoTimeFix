@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
         tools:ignore="UselessParent"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="80dp">
 
         <EditText
             android:id="@+id/locateText"

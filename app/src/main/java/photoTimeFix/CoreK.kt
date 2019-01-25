@@ -11,10 +11,12 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.customtabs.CustomTabsIntent
+import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
+import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -119,14 +121,30 @@ class CoreK(private var context: Context) {
     fun updateDate (path : String , activity: Activity) : String {
         val file = File(path)
         val imageView : ImageView = activity.findViewById(R.id.user_bg)
-        if (file.exists()) {
+        return if (file.exists()&&file.isFile) {
             val bm : Bitmap = BitmapFactory.decodeFile(path)
             imageView.setImageBitmap(bm)
-            return Date(file.lastModified()).toString()
+            updateAppbar(activity,false)
+            Date(file.lastModified()).toString()
         }
-        else
+        else {
             imageView.setImageBitmap(null)
-            return ""
+            updateAppbar(activity,true)
+            ""
+        }
+    }
+
+    fun updateAppbar (activity: Activity, scrollAble : Boolean) {
+        val mAppBarLayout = activity.findViewById<AppBarLayout>(R.id.app_bars)
+        val mAppBarChildAt: View = mAppBarLayout.getChildAt(0)
+        val mAppBarParams: AppBarLayout.LayoutParams = mAppBarChildAt.layoutParams as AppBarLayout.LayoutParams
+        mAppBarParams.scrollFlags = if (scrollAble) AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+        else  0
+        mAppBarChildAt.layoutParams = mAppBarParams
+        /* 作者：Silas_
+           来源：CSDN
+           原文：https://blog.csdn.net/qq_31852701/article/details/80859644
+           版权声明：本文为博主原创文章，转载请附上博文链接！ */
     }
 
 }

@@ -19,6 +19,8 @@ import org.jetbrains.anko.toast
 import tech.lincaiqi.PhotoTimeFix.R
 import java.io.File
 import java.util.*
+import java.text.SimpleDateFormat
+
 
 class Fragment2 : Fragment() {
 
@@ -29,7 +31,6 @@ class Fragment2 : Fragment() {
     private lateinit var chooseBtn : Button
     private lateinit var radioGroup : RadioGroup
     private lateinit var dateEdit :EditText
-    private lateinit var imageView: ImageView
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, parent, savedInstanceState)
@@ -40,9 +41,8 @@ class Fragment2 : Fragment() {
         editor = preferences.edit()
         chooseBtn = view.findViewById(R.id.chooseButton)
         radioGroup = view.findViewById(R.id.radioGroup)
-        coreK.initFragment(preferences,editor,chooseBtn,radioGroup,this)
         dateEdit = view.findViewById(R.id.nowDate)
-
+        editor.apply()
         locateTv.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -62,18 +62,25 @@ class Fragment2 : Fragment() {
             else context!!.toast("文件不存在")
         }
 
-        val dateBtn = view.findViewById<Button>(R.id.dateButton)
+        val dateBtn = view.findViewById<Button>(tech.lincaiqi.PhotoTimeFix.R.id.dateButton)
         dateBtn.setOnClickListener {
             TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"))
             val calendar : Calendar = Calendar.getInstance()
-            var date = ""
-            val tp = TimePickerDialog (context, { _, i: Int, i1: Int ->
-                date = date + i.toString() + ":" + i1.toString()
+            val selectCalender : Calendar = Calendar.getInstance()
+            var nYear : Int = calendar.get(Calendar.YEAR)
+            var nMonth : Int = calendar.get(Calendar.MONTH)
+            var nDay : Int = calendar.get(Calendar.DAY_OF_MONTH)
+            val tp = TimePickerDialog (context, { _, hour: Int, minute: Int ->
+                selectCalender.set(nYear,nMonth,nDay,hour,minute)
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
+                val date : String = sdf.format(selectCalender.time)
                 val editFormat2 : EditText = view.findViewById(R.id.choseDateEdit)
                 editFormat2.setText(date)
             }, calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),true)
             val dp = DatePickerDialog (context!!, { _, year: Int, month: Int, day: Int ->
-                date = year.toString() + "-" + (month+1).toString()+ "-" + day.toString() +  " "
+                nYear = year
+                nMonth = month
+                nDay = day
                 tp.show()
             },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))
             dp.show()
@@ -92,6 +99,15 @@ class Fragment2 : Fragment() {
             editor.putString("locate", path)
             editor.apply()
         } else context!!.longToast("选择出错，请手动填写路径并联系开发者")
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (context != null && isVisibleToUser) {
+            coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this)
+            val iV = activity!!.findViewById<ImageView>(R.id.user_bg)
+            if (iV.drawable != null) coreK.updateAppbar(activity!!,false)
+        }
     }
 
 }

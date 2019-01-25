@@ -6,7 +6,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "tech.lincaiqi.PhotoTimeFix"
-        minSdkVersion 21
+        minSdkVersion 19
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 21
         versionCode 8

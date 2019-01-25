@@ -7,6 +7,8 @@
     android:fitsSystemWindows="true"
     tools:context="photoTimeFix.MainActivity">
 
+    <!-- 感谢https://www.jianshu.com/p/06c0ae8d9a96/提供参考 -->
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bars"
         android:layout_width="match_parent"
@@ -15,12 +17,13 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/user_cTL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="@color/colorPrimary"
             app:statusBarScrim="@android:color/transparent"
-            app:titleEnabled="false">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
                 android:id="@+id/user_bg"
@@ -37,23 +40,22 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
+                android:layout_height="?attr/actionBarSize"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:titleMarginTop="15dp"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/mTb"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                app:tabMode="scrollable"
-                android:layout_gravity="bottom" />
-
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-
+    <android.support.design.widget.TabLayout
+        android:id="@+id/mTb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="scrollable"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
     <android.support.v4.view.ViewPager
         android:id="@+id/mVp"
         android:layout_width="match_parent"

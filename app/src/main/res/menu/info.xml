@@ -1,12 +1,8 @@
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
         android:id="@+id/more"
-        android:orderInCategory="100"
-        android:title="@string/about"
-        app:showAsAction="ifRoom"
-        tools:ignore="HardcodedText" />
+        android:title="@string/about" />
 
 </menu>

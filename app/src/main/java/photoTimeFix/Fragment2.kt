@@ -5,19 +5,18 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import org.jetbrains.anko.longToast
-import org.jetbrains.anko.toast
+import tech.lincaiqi.PhotoTimeFix.Core
 import tech.lincaiqi.PhotoTimeFix.R
-import java.io.File
 import java.util.*
 import java.text.SimpleDateFormat
 
@@ -26,11 +25,14 @@ class Fragment2 : Fragment() {
 
     private lateinit var preferences : SharedPreferences
     private lateinit var editor : SharedPreferences.Editor
-    private lateinit var coreK: CoreK
+    private lateinit var coreK : CoreK
     private lateinit var locateTv : EditText
     private lateinit var chooseBtn : Button
     private lateinit var radioGroup : RadioGroup
-    private lateinit var dateEdit :EditText
+    private lateinit var dateEdit : EditText
+    private var bitmapIsNull : Boolean = true
+    private lateinit var choseDateEdit : EditText
+    private var core = Core()
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, parent, savedInstanceState)
@@ -42,13 +44,17 @@ class Fragment2 : Fragment() {
         chooseBtn = view.findViewById(R.id.chooseButton)
         radioGroup = view.findViewById(R.id.radioGroup)
         dateEdit = view.findViewById(R.id.nowDate)
+        choseDateEdit = view.findViewById(R.id.choseDateEdit)
         editor.apply()
         locateTv.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
                 val path:String = locateTv.text.toString()
-                dateEdit.setText(coreK.updateDate(path,activity!!))
+                val returnValue = coreK.updateDate(path,activity!!)
+                dateEdit.setText(returnValue[0])
+                choseDateEdit.setText(returnValue[1])
+                bitmapIsNull = (returnValue[0]=="")
             }
 
         })
@@ -56,10 +62,7 @@ class Fragment2 : Fragment() {
         val freshBtn = view.findViewById<Button>(R.id.freshButton)
         freshBtn.setOnClickListener {
             val path : String = locateTv.text.toString()
-            val file = File(path)
-            if (file.exists())
-                MediaScannerConnection.scanFile(context, arrayOf(path),null) { _, _ -> activity!!.runOnUiThread { context!!.toast("完成") }}
-            else context!!.toast("文件不存在")
+            coreK.freshMedia(path,context!!)
         }
 
         val dateBtn = view.findViewById<Button>(tech.lincaiqi.PhotoTimeFix.R.id.dateButton)
@@ -86,6 +89,14 @@ class Fragment2 : Fragment() {
             dp.show()
         }
 
+        val startBtn = view.findViewById<Button>(R.id.startButton)
+        startBtn.setOnClickListener {
+            val fileString: String = view.findViewById<EditText>(R.id.locateText).text.toString()
+            val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
+            val selectDate = choseDateEdit.text.toString()
+            core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate)
+        }
+
         return view
     }
 
@@ -94,7 +105,9 @@ class Fragment2 : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (path != "error") {
             locateTv.setText(path)
-            dateEdit.setText(coreK.updateDate(path,activity!!))
+            val returnValue = coreK.updateDate(path,activity!!)
+            dateEdit.setText(returnValue[0])
+            choseDateEdit.setText(returnValue[1])
             path = path.substring(0, path.lastIndexOf("/"))
             editor.putString("locate", path)
             editor.apply()
@@ -105,8 +118,8 @@ class Fragment2 : Fragment() {
         super.setUserVisibleHint(isVisibleToUser)
         if (context != null && isVisibleToUser) {
             coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this)
-            val iV = activity!!.findViewById<ImageView>(R.id.user_bg)
-            if (iV.drawable != null) coreK.updateAppbar(activity!!,false)
+            //context!!.toast(bitmapIsNull.toString())
+            if (!bitmapIsNull) coreK.updateAppbar(activity!!,false)
         }
     }
 

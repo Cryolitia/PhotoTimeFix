@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
         tools:ignore="UselessParent"
-        android:layout_marginTop="80dp">
+        android:layout_marginTop="60dp">
 
         <EditText
             android:id="@+id/locateText"
@@ -42,27 +42,6 @@
                 android:enabled="false"
                 tools:ignore="LabelFor"
                 android:inputType="datetime"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/format" />
-
-            <EditText
-                android:id="@+id/editFormat"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/img_yyyymmddhhmm_hhmmss_jpg"
-                android:inputType="textPersonName" />
 
         </LinearLayout>
 

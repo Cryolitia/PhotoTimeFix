@@ -3,11 +3,9 @@ package tech.lincaiqi.PhotoTimeFix;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -21,14 +19,17 @@ public class Core {
 
     private boolean support = true;
 
-    public void process(Context context, int startnum, int endnum, String fileString, boolean radio, Activity activity, String format) {
+    public void process(Context context, int startnum, int endnum, String fileString, boolean radio, Activity activity, String format, String selectDate) {
         File file = new File(fileString);
         //Log.d("EditText", locateTv.getText().toString());
         if (!file.exists()) {
-            Toast.makeText(context, "路径不存在", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "路径或文件不存在", Toast.LENGTH_LONG).show();
             return;
         }
-        final File[] files = file.listFiles();
+        final File[] files;
+        if (file.isDirectory()) {
+            files = file.listFiles();
+        } else files = new File[]{file};
         final ProgressDialog pd = new ProgressDialog(context);
 
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -49,6 +50,8 @@ public class Core {
             if (!radio) {
 
                 boolean retValue;
+
+                Toast.makeText(context,"正在获取ROOT权限",Toast.LENGTH_LONG);
 
                 try {
                     suProcess = Runtime.getRuntime().exec("su");
@@ -107,7 +110,7 @@ public class Core {
                 i++;
 
                 if (i >= startnum && (endnum == 0 || i <= endnum)) {
-                    String time = f.getName();
+                    String time = selectDate.equals("") ? f.getName() : selectDate;
                     time = Pattern.compile("[^0-9]").matcher(time).replaceAll("").trim();
                     if (time.contains("20") && time.substring(time.indexOf("20")).length() >= 12) {
                         String targetTime = time.substring(time.indexOf("20"), time.indexOf("20") + 12);

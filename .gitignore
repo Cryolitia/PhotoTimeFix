@@ -56,3 +56,5 @@ freeline_project_description.json
 捕获.PNG
 
 .idea/
+
+gradle.properties

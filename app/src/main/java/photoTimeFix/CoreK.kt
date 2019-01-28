@@ -16,6 +16,7 @@ import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RadioGroup
 import org.jetbrains.anko.longToast
@@ -33,7 +35,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-class CoreK(private var context: Context) {
+class CoreK(private var context: Context, private var editor: SharedPreferences.Editor) {
 
     fun initFragment(preferences: SharedPreferences, editor: SharedPreferences.Editor, chooseBtn: Button, radioGroup: RadioGroup, fragment: Fragment) {
         radioGroup.check(preferences.getInt("mode", R.id.radioButton))
@@ -56,10 +58,11 @@ class CoreK(private var context: Context) {
             webView.webViewClient = WebViewClient()
             webView.loadUrl("file:///android_asset/about.html")
             webView.settings.javaScriptEnabled = true
+            webView.requestFocusFromTouch()
             webView.addJavascriptInterface(this, "openGit")
             builder.setView(view)
         } catch (e: Exception) {
-            builder.setMessage("加载Webview错误，已停止显示帮助窗口。\n该错误并不影响正常功能运行，且开发者仅在模拟器上遇到过，如果出现此对话框请与开发者联系。")
+            builder.setMessage("加载WebView错误，已停止显示帮助窗口。\n该错误并不影响正常功能运行，且开发者仅在模拟器上遇到过，如果出现此对话框请与开发者联系。")
             e.printStackTrace()
         }
         builder.setPositiveButton("确定", null)
@@ -189,6 +192,21 @@ class CoreK(private var context: Context) {
         Log.d("path",paths.toString())
         MediaScannerConnection.scanFile(context, paths, null) { _, _ -> }
         context.toast("完成")
+    }
+
+    @JavascriptInterface
+    fun updateDelay () {
+        val et = EditText(context)
+        et.inputType = InputType.TYPE_CLASS_NUMBER
+        var input : Int
+        AlertDialog.Builder(context).setTitle("设置延时")
+                .setView(et)
+                .setPositiveButton("确定") { _,_ ->
+                    input = et.text.toString().toInt()
+                    editor.putInt("delay",input)
+                    editor.apply()
+                }
+                .show()
     }
 
 }

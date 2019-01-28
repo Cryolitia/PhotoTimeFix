@@ -19,7 +19,7 @@ public class Core {
 
     private boolean support = true;
 
-    public void process(Context context, int startnum, int endnum, String fileString, boolean radio, Activity activity, String format, String selectDate) {
+    public void process(Context context, int startnum, int endnum, String fileString, boolean radio, Activity activity, String format, String selectDate, int delay) {
         File file = new File(fileString);
         //Log.d("EditText", locateTv.getText().toString());
         if (!file.exists()) {
@@ -51,7 +51,9 @@ public class Core {
 
                 boolean retValue;
 
-                Toast.makeText(context,"正在获取ROOT权限",Toast.LENGTH_LONG);
+                Looper.prepare();
+                Toast.makeText(context, "正在获取ROOT权限……", Toast.LENGTH_LONG).show();
+                Looper.loop();
 
                 try {
                     suProcess = Runtime.getRuntime().exec("su");
@@ -138,11 +140,11 @@ public class Core {
                             }
                         }
 
-                        /*try {
-                            Thread.sleep(100);
+                        try {
+                            Thread.sleep(delay);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                        }*/
+                        }
                     }
 
                     activity.runOnUiThread(() -> pd.incrementProgressBy(1));

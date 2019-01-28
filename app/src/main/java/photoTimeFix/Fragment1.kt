@@ -31,9 +31,9 @@ class Fragment1 : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, parent, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_1, parent, false)
-        coreK = CoreK(context!!)
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
+        coreK = CoreK(context!!,editor)
         locateTv = view!!.findViewById(R.id.locateText)
         locateText = view.findViewById<EditText>(R.id.locateText)
         locateText.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera"))
@@ -50,7 +50,7 @@ class Fragment1 : Fragment() {
             val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
             Log.d("radio", radioGroup.checkedRadioButtonId.toString())
             Log.d("radio", R.id.radioButton.toString())
-            core.process(context, startNum, endNum, fileString, radio, activity, format, "")
+            core.process(context, startNum, endNum, fileString, radio, activity, format, "",preferences.getInt("delay",0))
         }
         val freshButton = view.findViewById<Button>(R.id.freshButton)
         freshButton.setOnClickListener {

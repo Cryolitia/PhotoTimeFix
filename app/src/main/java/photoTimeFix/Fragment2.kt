@@ -38,9 +38,9 @@ class Fragment2 : Fragment() {
         super.onCreateView(inflater, parent, savedInstanceState)
         val view : View = inflater.inflate(R.layout.fragment_2,parent,false)
         locateTv = view.findViewById(R.id.locateText)
-        coreK = CoreK(context!!)
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
+        coreK = CoreK(context!!,editor)
         chooseBtn = view.findViewById(R.id.chooseButton)
         radioGroup = view.findViewById(R.id.radioGroup)
         dateEdit = view.findViewById(R.id.nowDate)
@@ -94,7 +94,7 @@ class Fragment2 : Fragment() {
             val fileString: String = view.findViewById<EditText>(R.id.locateText).text.toString()
             val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
             val selectDate = choseDateEdit.text.toString()
-            core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate)
+            core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate,0)
         }
 
         return view

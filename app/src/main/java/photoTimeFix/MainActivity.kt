@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         preferences = getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(this)
+        coreK = CoreK(this,editor)
         if (preferences.getBoolean("ifFirst",true)) {
             coreK.showAbout()
             editor.putBoolean("ifFirst",false)

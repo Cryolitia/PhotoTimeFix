@@ -1,5 +1,6 @@
 package photoTimeFix
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -9,7 +10,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +28,9 @@ class Fragment2 : Fragment() {
     private lateinit var coreK : CoreK
     private lateinit var locateTv : EditText
     private lateinit var chooseBtn : Button
+    private lateinit var freshBtn : Button
+    private lateinit var exifBtn : Button
+    private lateinit var startBtn : Button
     private lateinit var radioGroup : RadioGroup
     private lateinit var dateEdit : EditText
     private var bitmapIsNull : Boolean = true
@@ -52,14 +55,23 @@ class Fragment2 : Fragment() {
             override fun afterTextChanged(p0: Editable?) {
                 val path:String = locateTv.text.toString()
                 val returnValue = coreK.updateDate(path,activity!!)
+                if (returnValue[0]!="") {
+                    freshBtn.isEnabled = true
+                    exifBtn.isEnabled = true
+                    startBtn.isEnabled = true
+                } else {
+                    freshBtn.isEnabled = false
+                    exifBtn.isEnabled = false
+                    startBtn.isEnabled = false
+                }
                 dateEdit.setText(returnValue[0])
                 choseDateEdit.setText(returnValue[1])
                 bitmapIsNull = (returnValue[0]=="")
             }
 
         })
-
-        val freshBtn = view.findViewById<Button>(R.id.freshButton)
+        exifBtn = view.findViewById(R.id.showEXIF)
+        freshBtn = view.findViewById(R.id.freshButton)
         freshBtn.setOnClickListener {
             val path : String = locateTv.text.toString()
             coreK.freshMedia(path,context!!)
@@ -89,12 +101,24 @@ class Fragment2 : Fragment() {
             dp.show()
         }
 
-        val startBtn = view.findViewById<Button>(R.id.startButton)
+        startBtn = view.findViewById<Button>(R.id.startButton)
         startBtn.setOnClickListener {
             val fileString: String = view.findViewById<EditText>(R.id.locateText).text.toString()
             val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
             val selectDate = choseDateEdit.text.toString()
             core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate,0)
+        }
+
+        exifBtn.setOnClickListener {
+            val returnEXIF = coreK.readEXIF(locateTv.text.toString())
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(returnEXIF.strings.joinToString(separator = "\n"))
+            if (returnEXIF.dateExist) builder.setPositiveButton("使用EXIF时间") { _, _ ->
+                choseDateEdit.setText(returnEXIF.dateString)
+            }
+            else builder.setPositiveButton("确定",null)
+            builder.setNegativeButton("取消",null)
+            builder.show()
         }
 
         return view
@@ -106,12 +130,26 @@ class Fragment2 : Fragment() {
         if (path != "error") {
             locateTv.setText(path)
             val returnValue = coreK.updateDate(path,activity!!)
+            if (returnValue[0]!="") {
+                freshBtn.isEnabled = true
+                exifBtn.isEnabled = true
+                startBtn.isEnabled = true
+            } else {
+                freshBtn.isEnabled = false
+                exifBtn.isEnabled = false
+                startBtn.isEnabled = false
+            }
             dateEdit.setText(returnValue[0])
             choseDateEdit.setText(returnValue[1])
             path = path.substring(0, path.lastIndexOf("/"))
             editor.putString("locate", path)
             editor.apply()
-        } else context!!.longToast("选择出错，请手动填写路径并联系开发者")
+        } else {
+            context!!.longToast("选择出错，请手动填写路径并联系开发者")
+            freshBtn.isEnabled = false
+            exifBtn.isEnabled = false
+            startBtn.isEnabled = false
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

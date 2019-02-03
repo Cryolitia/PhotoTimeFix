@@ -13,15 +13,28 @@
         tools:ignore="UselessParent"
         android:layout_marginTop="60dp">
 
-        <EditText
-            android:id="@+id/locateText"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/selectFile"
-            android:inputType="textPersonName"
-            android:singleLine="true"
-            android:text="" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/chooseButton"
+                style="?android:attr/buttonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/selectFile" />
+
+            <EditText
+                android:id="@+id/locateText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/selectFile"
+                android:inputType="textPersonName"
+                android:singleLine="true"
+                android:text="" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,34 +108,35 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/chooseButton"
+                android:id="@+id/showEXIF"
                 style="?android:attr/buttonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/selectFile"
                 android:layout_weight="1"
-                tools:ignore="NestedWeights" />
+                android:enabled="false"
+                android:text="@string/showexif" />
 
             <Button
                 android:id="@+id/freshButton"
                 style="?android:attr/buttonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/fresh"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="@string/fresh" />
 
             <Button
                 android:id="@+id/startButton"
                 style="?android:attr/buttonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/start"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="@string/start" />
         </LinearLayout>
 
     </LinearLayout>

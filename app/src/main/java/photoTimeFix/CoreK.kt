@@ -13,6 +13,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.AppBarLayout
+import android.support.media.ExifInterface
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -36,6 +37,8 @@ import java.util.*
 import java.util.regex.Pattern
 
 class CoreK(private var context: Context, private var editor: SharedPreferences.Editor) {
+
+    val EXIF_TAGS : Array<String> = arrayOf(ExifInterface.TAG_MAKE ,ExifInterface.TAG_MODEL, ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.TAG_SOFTWARE,ExifInterface.TAG_EXPOSURE_TIME,ExifInterface.TAG_F_NUMBER,ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY,ExifInterface.TAG_DATETIME,ExifInterface.TAG_EXPOSURE_BIAS_VALUE,ExifInterface.TAG_METERING_MODE,ExifInterface.TAG_LIGHT_SOURCE,ExifInterface.TAG_FOCAL_LENGTH)
 
     fun initFragment(preferences: SharedPreferences, editor: SharedPreferences.Editor, chooseBtn: Button, radioGroup: RadioGroup, fragment: Fragment) {
         radioGroup.check(preferences.getInt("mode", R.id.radioButton))
@@ -208,5 +211,35 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
                 }
                 .show()
     }
+
+    fun readEXIF(path : String) :EXIFStrings {
+        val exifString = EXIFStrings()
+        val exifInterface = ExifInterface(path)
+        val strings = arrayOfNulls<String>(EXIF_TAGS.size)
+        for ((i, tag) in EXIF_TAGS.withIndex()) {
+            strings[i] = tag + ":" + exifInterface.getAttribute(tag)
+            exifString.strings = strings
+        }
+        if (exifInterface.getAttribute(ExifInterface.TAG_DATETIME)!=null) {
+            exifString.dateExist = true
+            var sdf= SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault())
+            try {
+                val d : Date = sdf.parse(exifInterface.getAttribute(ExifInterface.TAG_DATETIME))
+                sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                exifString.dateString = sdf.format(d)
+            }catch (e : java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+        return exifString
+    }
+
+    class EXIFStrings {
+        var dateExist : Boolean = false
+        var strings : Array<String?> = emptyArray()
+        var dateString : String = ""
+    }
+
+
 
 }

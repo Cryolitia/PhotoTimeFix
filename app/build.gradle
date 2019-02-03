@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'AndResGuard'
 
 android {
     signingConfigs {
@@ -18,8 +17,8 @@ android {
         minSdkVersion 19
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 21
-        versionCode 10
-        versionName '3.1'
+        versionCode 11
+        versionName '3.2'
         resConfigs "zh", "zh-rCN"
     }
     buildTypes {
@@ -45,48 +44,9 @@ dependencies {
     implementation 'org.jetbrains.anko:anko-common:0.10.8'
     implementation 'com.android.support:customtabs:28.0.0'
     implementation 'com.android.support:design:28.0.0'
-}
-
-andResGuard {
-    // mappingFile = file("./resource_mapping.txt")
-    mappingFile = null
-    use7zip = true
-    useSign = true
-    // 打开这个开关，会keep住所有资源的原始路径，只混淆资源的名字
-    keepRoot = false
-    whiteList = [
-            // for your icon
-            "R.drawable.icon",
-            // for fabric
-            "R.string.com.crashlytics.*",
-            // for google-services
-            "R.string.google_app_id",
-            "R.string.gcm_defaultSenderId",
-            "R.string.default_web_client_id",
-            "R.string.ga_trackingId",
-            "R.string.firebase_database_url",
-            "R.string.google_api_key",
-            "R.string.google_crash_reporting_api_key"
-    ]
-    compressFilePattern = [
-            "*.png",
-            "*.jpg",
-            "*.jpeg",
-            "*.gif",
-    ]
-    sevenzip {
-        artifact = 'com.tencent.mm:SevenZip:1.2.15'
-        //path = "/usr/local/bin/7za"
-    }
-
-    /**
-     * 可选： 如果不设置则会默认覆盖assemble输出的apk
-     **/
-    // finalApkBackupPath = "${project.rootDir}/final.apk"
-
-    /**
-     * 可选: 指定v1签名时生成jar文件的摘要算法
-     * 默认值为“SHA-1”
-     **/
-    // digestalg = "SHA-256"
+    def libsuVersion = '2.2.0'
+    implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
+    /* Optional: For including a prebuild busybox */
+    implementation "com.github.topjohnwu.libsu:busybox:${libsuVersion}"
+    implementation "com.android.support:exifinterface:28.0.0"
 }

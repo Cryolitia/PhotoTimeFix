@@ -16,4 +16,5 @@
     <string name="selectDate">选择日期时间</string>
     <string name="nowdatetime">当前日期时间</string>
     <string name="imageContent">show the image selected</string>
+    <string name="showexif">查看EXIF</string>
 </resources>

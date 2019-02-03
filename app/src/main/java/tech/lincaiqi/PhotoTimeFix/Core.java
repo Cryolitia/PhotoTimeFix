@@ -6,10 +6,8 @@ import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import com.topjohnwu.superuser.Shell;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -44,69 +42,18 @@ public class Core {
             int i = 0;
 
             Log.d("button", String.valueOf(radio));
-            DataOutputStream os = null;
-            Process suProcess;
 
             if (!radio) {
-
-                boolean retValue;
-
-                Looper.prepare();
-                Toast.makeText(context, "正在获取ROOT权限……", Toast.LENGTH_LONG).show();
-                Looper.loop();
-
-                try {
-                    suProcess = Runtime.getRuntime().exec("su");
-
-                    os = new DataOutputStream(suProcess.getOutputStream());
-                    DataInputStream osRes = new DataInputStream(suProcess.getInputStream());
-
-                    // Getting the id of the current user to check if this is root
-                    os.writeBytes("id\n");
-                    os.flush();
-
-                    String currUid = osRes.readLine();
-                    boolean exitSu;
-                    if (null == currUid) {
-                        retValue = false;
-                        //exitSu = false;
-                        Log.d("ROOT", "Can't get root access or denied by user");
-                    } else if (currUid.contains("uid=0")) {
-                        retValue = true;
-                        //exitSu = true;
-                        Log.d("ROOT", "Root access granted");
-                    } else {
-                        retValue = false;
-                        //exitSu = true;
-                        Log.d("ROOT", "Root access rejected: " + currUid);
-                    }
-
-                } catch (Exception e) {
-
-                    retValue = false;
-                    Log.d("ROOT", "Root access rejected [" + e.getClass().getName() + "] : " + e.getMessage());
-                    e.printStackTrace();
-                }
-
-                if (!retValue) {
-                    activity.runOnUiThread(() -> {
-                        Toast.makeText(context, "请检查root权限", Toast.LENGTH_LONG).show();
-                        pd.dismiss();
-                    });
-                    try {
-                        if (os != null) {
-                            os.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                Shell.Config.setFlags(Shell.FLAG_USE_MAGISK_BUSYBOX);
+                //Shell.Config.addInitializers(BusyBoxInstaller.class);
+                if (!Shell.rootAccess()) {
+                    activity.runOnUiThread(()-> Toast.makeText(context,"请检查root权限",Toast.LENGTH_LONG).show());
+                    pd.dismiss();
                     return;
                 }
-
             }
 
             long targetTimeLongType;
-
             for (File f : files) {
                 Log.d("File:", f.getName());
                 i++;
@@ -132,9 +79,8 @@ public class Core {
                             try {
                                 String command = "touch -t " + targetTime + " " + f.getAbsolutePath();
                                 Log.d("command", command);
-                                os.writeBytes(command + "\n");
-                                os.flush();
-                                //suProcess.waitFor();
+                                Shell.Result result = Shell.su(command).exec();
+                                if (!result.isSuccess()) Log.e("touch",result.getOut().toString());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -150,16 +96,6 @@ public class Core {
                     activity.runOnUiThread(() -> pd.incrementProgressBy(1));
                 } else if (i > endnum) break;
 
-            }
-
-            if (os != null) {
-                try {
-                    os.writeBytes("exit\n");
-                    //os.flush();
-                    //os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
 
             activity.runOnUiThread(() -> {

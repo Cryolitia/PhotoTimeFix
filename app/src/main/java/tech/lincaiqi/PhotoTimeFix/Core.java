@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.topjohnwu.superuser.BusyBoxInstaller;
 import com.topjohnwu.superuser.Shell;
 import java.io.File;
 import java.text.SimpleDateFormat;

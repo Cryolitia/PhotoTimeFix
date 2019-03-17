@@ -1,5 +1,6 @@
 package photoTimeFix
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         preferences = getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(this,editor)
+        coreK = CoreK(this,editor,this)
         if (preferences.getBoolean("ifFirst",true)) {
             coreK.showAbout()
             editor.putBoolean("ifFirst",false)

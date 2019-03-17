@@ -33,7 +33,7 @@ class Fragment1 : Fragment() {
         val view = inflater.inflate(R.layout.fragment_1, parent, false)
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(context!!,editor)
+        coreK = CoreK(context!!,editor,null)
         locateTv = view!!.findViewById(R.id.locateText)
         locateText = view.findViewById<EditText>(R.id.locateText)
         locateText.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera"))

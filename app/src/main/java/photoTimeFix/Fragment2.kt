@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +44,7 @@ class Fragment2 : Fragment() {
         locateTv = view.findViewById(R.id.locateText)
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(context!!,editor)
+        coreK = CoreK(context!!,editor,null)
         chooseBtn = view.findViewById(R.id.chooseButton)
         radioGroup = view.findViewById(R.id.radioGroup)
         dateEdit = view.findViewById(R.id.nowDate)

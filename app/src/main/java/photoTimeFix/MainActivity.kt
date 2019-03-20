@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         preferences = getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(this,editor,this)
+        coreK = CoreK(this,editor,this,preferences)
         if (preferences.getBoolean("ifFirst",true)) {
             coreK.showAbout()
             editor.putBoolean("ifFirst",false)
@@ -40,13 +40,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.info,menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        coreK.showAbout()
-        return true
+        if (item != null) {
+            return when (item.itemId) {
+                R.id.more -> {
+                    coreK.showAbout()
+                    true
+                }
+                R.id.experimentalFunctionMenu -> {
+                    coreK.experimentalFunction()
+                    true
+                }
+                R.id.test -> {
+                    coreK.test()
+                    true
+                }
+                else -> {
+                    super.onOptionsItemSelected(item)
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private  fun initTitle() {

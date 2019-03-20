@@ -33,13 +33,13 @@ class Fragment1 : Fragment() {
         val view = inflater.inflate(R.layout.fragment_1, parent, false)
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(context!!,editor,null)
+        coreK = CoreK(context!!,editor,null,null)
         locateTv = view!!.findViewById(R.id.locateText)
         locateText = view.findViewById<EditText>(R.id.locateText)
-        locateText.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera"))
+        locateText.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().path + "/DCIM/Camera"))
         chooseBtn = view.findViewById<Button>(R.id.chooseButton)
         radioGroup = view.findViewById(R.id.radioGroup)
-        coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this)
+        coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this,true)
         val startBtn = view.findViewById<Button>(R.id.startButton)
         startBtn.setOnClickListener {
             val startNum: Int = Integer.valueOf(view.findViewById<EditText>(R.id.start).text.toString())
@@ -50,7 +50,7 @@ class Fragment1 : Fragment() {
             val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
             Log.d("radio", radioGroup.checkedRadioButtonId.toString())
             Log.d("radio", R.id.radioButton.toString())
-            core.process(context, startNum, endNum, fileString, radio, activity, format, "",preferences.getInt("delay",0))
+            core.process(context, startNum, endNum, fileString, radio, activity, format, "",preferences.getInt("delay",0),preferences.getBoolean("useEXIF",false))
         }
         val freshButton = view.findViewById<Button>(R.id.freshButton)
         freshButton.setOnClickListener {
@@ -74,7 +74,7 @@ class Fragment1 : Fragment() {
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (context != null && isVisibleToUser) {
-            coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this)
+            coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this,true)
             coreK.updateAppbar(activity!!,true)
             /* 作者：Silas_
             来源：CSDN

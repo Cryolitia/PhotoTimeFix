@@ -2,16 +2,16 @@ package photoTimeFix
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Environment
+import android.os.Looper
 import android.provider.MediaStore
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.AppBarLayout
@@ -26,10 +26,9 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RadioGroup
+import android.widget.*
+import com.topjohnwu.superuser.Shell
+import com.topjohnwu.superuser.ShellUtils
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 import tech.lincaiqi.PhotoTimeFix.R
@@ -38,14 +37,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-class CoreK(private var context: Context, private var editor: SharedPreferences.Editor, private var activity: Activity?) {
+class CoreK(private var context: Context, private var editor: SharedPreferences.Editor, private var activity: Activity?, private var sharedPreferences: SharedPreferences?) {
 
-    val EXIF_TAGS: Array<String> = arrayOf(ExifInterface.TAG_MAKE, ExifInterface.TAG_MODEL, ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.TAG_SOFTWARE, ExifInterface.TAG_EXPOSURE_TIME, ExifInterface.TAG_F_NUMBER, ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY, ExifInterface.TAG_DATETIME, ExifInterface.TAG_EXPOSURE_BIAS_VALUE, ExifInterface.TAG_METERING_MODE, ExifInterface.TAG_LIGHT_SOURCE, ExifInterface.TAG_FOCAL_LENGTH)
+    private val EXIF_TAGS: Array<String> = arrayOf(ExifInterface.TAG_MAKE, ExifInterface.TAG_MODEL, ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.TAG_SOFTWARE, ExifInterface.TAG_EXPOSURE_TIME, ExifInterface.TAG_F_NUMBER, ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY, ExifInterface.TAG_DATETIME, ExifInterface.TAG_EXPOSURE_BIAS_VALUE, ExifInterface.TAG_METERING_MODE, ExifInterface.TAG_LIGHT_SOURCE, ExifInterface.TAG_FOCAL_LENGTH)
+    private lateinit var TV:TextView
 
-    fun initFragment(preferences: SharedPreferences, editor: SharedPreferences.Editor, chooseBtn: Button, radioGroup: RadioGroup, fragment: Fragment) {
+    fun initFragment(preferences: SharedPreferences, editor: SharedPreferences.Editor, chooseBtn: Button, radioGroup: RadioGroup, fragment: Fragment, isFolder : Boolean) {
         radioGroup.check(preferences.getInt("mode", R.id.radioButton))
         chooseBtn.setOnClickListener {
-            context.longToast("由于系统限制(其实是我懒)，请选择文件夹内任意一张图片")
+            if (isFolder) context.longToast("由于系统限制(其实是我懒)，请选择文件夹内任意一张图片")
             chooseFile(fragment)
         }
         radioGroup.setOnCheckedChangeListener { _, i ->
@@ -58,14 +58,14 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
     fun showAbout() {
         val builder = AlertDialog.Builder(context)
         try {
-            val view = LayoutInflater.from(context).inflate(R.layout.about, null)
-            val webView: WebView = view.findViewById(R.id.webview)
+            //val view = LayoutInflater.from(context).inflate(R.layout.about, null)
+            val webView = WebView(context)
             webView.webViewClient = WebViewClient()
             webView.loadUrl("file:///android_asset/about.html")
             webView.settings.javaScriptEnabled = true
             webView.requestFocusFromTouch()
             webView.addJavascriptInterface(this, "openGit")
-            builder.setView(view)
+            builder.setView(webView)
         } catch (e: Exception) {
             builder.setMessage("加载WebView错误，已停止显示帮助窗口。\n该错误并不影响正常功能运行，且开发者仅在模拟器上遇到过，如果出现此对话框请与开发者联系。")
             e.printStackTrace()
@@ -242,7 +242,6 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
         var dateString: String = ""
     }
 
-    @JavascriptInterface
     fun switchIcon() {
         val defaultComponentName = ComponentName(activity!!.baseContext,"photoTimeFix.MainActivity")
         val newComponentName = ComponentName(activity!!.baseContext,"photoTimeFix.newIcon")
@@ -258,6 +257,92 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
                     packageManager.setComponentEnabledSetting(defaultComponentName,PackageManager.COMPONENT_ENABLED_STATE_ENABLED,PackageManager.DONT_KILL_APP)
                 }
                 .show()
+    }
+
+    fun test(){
+        val tV = TextView(context)
+        tV.setBackgroundColor(Color.parseColor("#efefef"))
+        tV.text = "正在运行兼容性测试..."
+        val ad = AlertDialog.Builder(context)
+                .setTitle("兼容性测试")
+                .setView(tV)
+                .setCancelable(false)
+                .show()
+        Thread { runTest(tV,ad) }.start()
+    }
+
+    private fun runTest(tv : TextView, ad : AlertDialog) {
+        TV=tv
+        printTest("\n正在创建测试文件(/sdcard/CompatibilityTestFile)...")
+        val file = File(Environment.getExternalStorageDirectory().path,"CompatibilityTestFile")
+        try {
+            file.createNewFile()
+        } catch (e : Exception) {
+            e.printStackTrace()
+            printTest("失败\n$e")
+            return
+        }
+        printTest("成功")
+        printTest("\n开始执行 模式一：Java 可用性检查...")
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val targetTime = sdf.parse("2002-07-19 05:21:00").time
+        if (file.setLastModified(targetTime)) {
+            printTest("\n命令执行成功...检查执行结果\n")
+            val dateResult : String = sdf.format(Date(file.lastModified()))
+            printTest(dateResult)
+            if (dateResult == "2002-07-19 05:21:00") printTest("\n检查完毕...模式一：Java 完全可用")
+            else printTest("\n系统返回执行成功却未生效")
+            file.setLastModified(sdf.parse("2002-09-28 00:00:00").time)
+        } else printTest("\n命令执行失败,模式一：Java 不可用，请与作者联系以获得帮助")
+        printTest("\n开始执行 模式二：Shell 可用性检查...正在检查root权限")
+        if (Shell.rootAccess()) {
+            printTest("\n已获取root权限...检查touch命令\ntouch --help\n")
+            val result : Shell.Result = Shell.su("touch --help").exec()
+            printTest(result.out.toString())
+            if (result.isSuccess) {
+                printTest("\n发现touch命令...检查可用性\ntouch /sdcard/CompatibilityTestFile -t 200207190521\n")
+                val result2 : Shell.Result = Shell.su("touch /sdcard/CompatibilityTestFile -t 200207190521").exec()
+                printTest(result2.out.toString())
+                if (result2.isSuccess) {
+                    printTest("\n命令执行成功...检查执行结果\n")
+                    val dateResult : String = sdf.format(Date(file.lastModified()))
+                    printTest(dateResult)
+                    if (dateResult == "2002-07-19 05:21:00") printTest("\n检查完毕...模式二：Shell 完全可用")
+                    else printTest("\n系统返回执行成功却未生效")
+                } else printTest("\n命令执行失败，请与作者联系以获得帮助")
+            } else printTest("\ntouch命令不存在，请自行安装Busybox或与作者联系以获得帮助")
+        } else printTest("获取root权限失败，模式二：Shell 不可用")
+        printTest("\n正在清理测试文件(/sdcard/CompatibilityTestFile)...")
+        try {
+            file.delete()
+        } catch (e : Exception) {
+            e.printStackTrace()
+            printTest("失败\n$e")
+            return
+        }
+        activity!!.runOnUiThread {
+            tv.text = tv.text.toString() + "完成"
+            ad.setCancelable(true)
+        }
+    }
+
+    private fun printTest(string : String) {
+        activity!!.runOnUiThread {
+            TV.text = TV.text.toString() + string
+        }
+    }
+
+    fun experimentalFunction() {
+        val view = LayoutInflater.from(context).inflate(R.layout.experimental_function, null)
+        val switch: Switch = view.findViewById(R.id.switch1)
+        switch.isChecked = sharedPreferences!!.getBoolean("useEXIF",false)
+        view.findViewById<Button>(R.id.switchIconButton).setOnClickListener { switchIcon() }
+        AlertDialog.Builder(context).setTitle("实验性功能")
+                .setView(view)
+                .setPositiveButton("确定") {_,_->
+                    editor.putBoolean("useEXIF",switch.isChecked)
+                    editor.apply()
+                }.show()
     }
 
     fun newReadDate(name: String): String {
@@ -368,5 +453,4 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
         }
         return date.joinToString("")
     }
-
 }

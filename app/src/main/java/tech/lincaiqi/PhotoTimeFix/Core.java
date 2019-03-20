@@ -3,6 +3,7 @@ package tech.lincaiqi.PhotoTimeFix;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.media.ExifInterface;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,16 +11,19 @@ import android.widget.Toast;
 import com.topjohnwu.superuser.BusyBoxInstaller;
 import com.topjohnwu.superuser.Shell;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import photoTimeFix.CoreK;
+
 public class Core {
 
     private boolean support = true;
 
-    public void process(Context context, int startnum, int endnum, String fileString, boolean radio, Activity activity, String format, String selectDate, int delay) {
+    public void process(Context context, int startnum, int endnum, String fileString, boolean radio, Activity activity, String format, String selectDate, int delay,Boolean exif) {
         File file = new File(fileString);
         //Log.d("EditText", locateTv.getText().toString());
         if (!file.exists()) {
@@ -63,6 +67,19 @@ public class Core {
                 if (i >= startnum && (endnum == 0 || i <= endnum)) {
                     String time = selectDate.equals("") ? f.getName() : selectDate;
                     time = Pattern.compile("[^0-9]").matcher(time).replaceAll("").trim();
+                    if (exif) {
+                        try {
+                            ExifInterface exifInterface = new ExifInterface(f.getAbsolutePath());
+                            if (exifInterface.getAttribute(ExifInterface.TAG_DATETIME) != null) {
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault());
+                                Date d = sdf.parse(exifInterface.getAttribute(ExifInterface.TAG_DATETIME));
+                                sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+                                time = sdf.format(d);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     if (time.contains("20") && time.substring(time.indexOf("20")).length() >= 12) {
                         String targetTime = time.substring(time.indexOf("20"), time.indexOf("20") + 12);
                         if (radio) {

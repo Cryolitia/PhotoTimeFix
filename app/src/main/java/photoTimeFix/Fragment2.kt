@@ -44,7 +44,7 @@ class Fragment2 : Fragment() {
         locateTv = view.findViewById(R.id.locateText)
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(context!!,editor,null)
+        coreK = CoreK(context!!,editor,null,null)
         chooseBtn = view.findViewById(R.id.chooseButton)
         radioGroup = view.findViewById(R.id.radioGroup)
         dateEdit = view.findViewById(R.id.nowDate)
@@ -107,7 +107,7 @@ class Fragment2 : Fragment() {
             val fileString: String = view.findViewById<EditText>(R.id.locateText).text.toString()
             val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
             val selectDate = choseDateEdit.text.toString()
-            core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate,0)
+            core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate,0,false)
         }
 
         exifBtn.setOnClickListener {
@@ -122,12 +122,18 @@ class Fragment2 : Fragment() {
             builder.show()
         }
 
+        view.findViewById<TextView>(R.id.nowText).setOnClickListener {
+            val path:String = locateTv.text.toString()
+            val returnValue = coreK.updateDate(path,activity!!)
+            dateEdit.setText(returnValue[0])
+        }
+
         return view
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        var path = coreK.resultSolve(requestCode, data)
         super.onActivityResult(requestCode, resultCode, data)
+        var path = coreK.resultSolve(requestCode, data)
         if (path != "error") {
             locateTv.setText(path)
             val returnValue = coreK.updateDate(path,activity!!)
@@ -156,7 +162,7 @@ class Fragment2 : Fragment() {
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (context != null && isVisibleToUser) {
-            coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this)
+            coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this,false)
             //context!!.toast(bitmapIsNull.toString())
             if (!bitmapIsNull) coreK.updateAppbar(activity!!,false)
         }

@@ -17,4 +17,8 @@
     <string name="nowdatetime">当前日期时间</string>
     <string name="imageContent">show the image selected</string>
     <string name="showexif">查看EXIF</string>
+    <string name="switchIcon">切换图标</string>
+    <string name="test">兼容性测试</string>
+    <string name="exifSwitch">在批处理中使用Exif</string>
+    <string name="experimentalFunction">实验性功能</string>
 </resources>

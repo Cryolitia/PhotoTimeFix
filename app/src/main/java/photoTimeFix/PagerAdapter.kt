@@ -1,8 +1,8 @@
 package photoTimeFix
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 
 class PagerAdapter(fm: FragmentManager?, private val fragmentList : List<Fragment>, private val titleLis : List<String>) : FragmentPagerAdapter(fm) {
 

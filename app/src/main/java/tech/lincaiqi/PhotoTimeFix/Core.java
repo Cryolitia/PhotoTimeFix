@@ -27,7 +27,7 @@ public class Core {
         File file = new File(fileString);
         //Log.d("EditText", locateTv.getText().toString());
         if (!file.exists()) {
-            Toast.makeText(context, "路径或文件不存在", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.fileNotExistence, Toast.LENGTH_LONG).show();
             return;
         }
         final File[] files;
@@ -40,7 +40,7 @@ public class Core {
         pd.setCancelable(false);
         pd.setCanceledOnTouchOutside(false);
         pd.setMax(files.length);
-        pd.setTitle("进度");
+        pd.setTitle(context.getString(R.string.progress));
         pd.show();
 
         new Thread(() -> {
@@ -53,7 +53,7 @@ public class Core {
                 Shell.Config.setFlags(Shell.FLAG_USE_MAGISK_BUSYBOX);
                 //Shell.Config.addInitializers(BusyBoxInstaller.class);
                 if (!Shell.rootAccess()) {
-                    activity.runOnUiThread(()-> Toast.makeText(context,"请检查root权限",Toast.LENGTH_LONG).show());
+                    activity.runOnUiThread(()-> Toast.makeText(context, R.string.checkRoot,Toast.LENGTH_LONG).show());
                     pd.dismiss();
                     return;
                 }
@@ -120,13 +120,13 @@ public class Core {
             activity.runOnUiThread(() -> {
                         pd.dismiss();
                         if (!support) {
-                            Toast.makeText(context, "您的系统极有可能不支持此操作，请更换操作模式", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, R.string.systemNotSupport, Toast.LENGTH_LONG).show();
                         }
                     }
             );
 
             Looper.prepare();
-            Toast.makeText(context, "完成！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.finish, Toast.LENGTH_SHORT).show();
             Looper.loop();
         }).start();
     }

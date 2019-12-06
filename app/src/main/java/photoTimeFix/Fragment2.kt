@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -114,11 +114,11 @@ class Fragment2 : Fragment() {
             val returnEXIF = coreK.readEXIF(locateTv.text.toString())
             val builder = AlertDialog.Builder(context)
             builder.setMessage(returnEXIF.strings.joinToString(separator = "\n"))
-            if (returnEXIF.dateExist) builder.setPositiveButton("使用EXIF时间") { _, _ ->
+            if (returnEXIF.dateExist) builder.setPositiveButton(getString(R.string.usingEXIF)) { _, _ ->
                 choseDateEdit.setText(returnEXIF.dateString)
             }
-            else builder.setPositiveButton("确定",null)
-            builder.setNegativeButton("取消",null)
+            else builder.setPositiveButton(getString(R.string.OK),null)
+            builder.setNegativeButton(getString(R.string.cancel),null)
             builder.show()
         }
 
@@ -152,7 +152,7 @@ class Fragment2 : Fragment() {
             editor.putString("locate", path)
             editor.apply()
         } else {
-            context!!.longToast("选择出错，请手动填写路径并联系开发者")
+            context!!.longToast(getString(R.string.selectError))
             freshBtn.isEnabled = false
             exifBtn.isEnabled = false
             startBtn.isEnabled = false

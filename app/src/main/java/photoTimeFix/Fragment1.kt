@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +68,7 @@ class Fragment1 : Fragment() {
             locateTv.setText(path)
             editor.putString("locate", path)
             editor.apply()
-        } else context!!.longToast("选择出错，请手动填写路径并联系开发者")
+        } else context!!.longToast(getString(R.string.selectError))
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

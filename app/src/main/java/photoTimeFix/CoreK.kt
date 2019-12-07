@@ -207,7 +207,7 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
         AlertDialog.Builder(context).setTitle(R.string.setDelay)
                 .setView(et)
                 .setPositiveButton(R.string.OK) { _, _ ->
-                    input = et.text.toString().toInt()
+                    input = if (et.text.toString().equals("")) 0 else Integer.parseInt(et.text.toString())
                     editor.putInt("delay", input)
                     editor.apply()
                 }

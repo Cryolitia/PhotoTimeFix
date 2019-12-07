@@ -43,7 +43,7 @@
     <string name="creatingFile">\\nCreating test file(/sdcard/CompatibilityTestFile)…</string>
     <string name="fault">Failed\\n</string>
     <string name="success">success</string>
-    <string name="startMode1">\\nStart execution Mode 1: Java availability check … Checking root permissions</string>
+    <string name="startMode1">\\nStart execution Mode 1: Java availability check …</string>
     <string name="checkResult">\\nCommand executed successfully … check execution result\\n</string>
     <string name="checkMode1Finish">\\nChecked … Mode 1: Java is fully available</string>
     <string name="returnButCannotUse">\\nThe system returned to execute successfully but did not take effect</string>

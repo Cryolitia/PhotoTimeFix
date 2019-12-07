@@ -17,8 +17,8 @@ android {
         minSdkVersion 19
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
-        versionCode 13
-        versionName '3.4'
+        versionCode 14
+        versionName '3.4.1'
         resConfigs "zh", "zh-rCN"
     }
     buildTypes {

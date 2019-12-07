@@ -48,7 +48,7 @@
     <string name="shouldHavePermission">Die App muss über Speicherberechtigungen verfügen, damit sie ordnungsgemäß funktioniert</string>
     <string name="singleFileOperation">Einzeldateivorgang</string>
     <string name="startCheckMode2">\\nAusführungsmodus 2 starten: Shell-Verfügbarkeitsprüfung … Root-Berechtigungen werden überprüft</string>
-    <string name="startMode1">\\nAusführungsmodus 1 starten: Java-Verfügbarkeitsprüfung … Root-Berechtigungen werden überprüft</string>
+    <string name="startMode1">\\nAusführungsmodus 1 starten: Java-Verfügbarkeitsprüfung …</string>
     <string name="success">Erfolg</string>
     <string name="systemLimit">Aufgrund von Systemeinschränkungen (eigentlich bin ich faul), wählen Sie bitte ein Bild im Ordner aus</string>
     <string name="systemNotSupport">Höchstwahrscheinlich unterstützt Ihr System diesen Vorgang nicht. Ändern Sie den Betriebsmodus</string>

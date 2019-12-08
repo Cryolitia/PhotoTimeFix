@@ -290,9 +290,9 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
             printTest(R.string.checkResult)
             val dateResult : String = sdf.format(Date(file.lastModified()))
             printTest(dateResult)
-            if (dateResult == "2002-07-19 05:21:00") printTest(R.string.checkMode1Finish)
+            if (dateResult == "2004-09-04 05:21:00") printTest(R.string.checkMode1Finish)
             else printTest(R.string.returnButCannotUse)
-            file.setLastModified(sdf.parse("2004-09-04 00:00:00").time)
+            file.setLastModified(sdf.parse("2004-09-04 05:21:00").time)
         } else printTest(R.string.checkMode1Fault)
         printTest(R.string.startCheckMode2)
         if (Shell.rootAccess()) {

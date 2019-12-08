@@ -36,7 +36,7 @@
     <string name="fileNotExistence">Pfad oder Datei existiert nicht</string>
     <string name="findTouch">\\nTouch-Befehl suchen … Verfügbarkeit prüfen\\ntouch /sdcard/CompatibilityTestFile -t 200409040521\\n</string>
     <string name="finish">Fertig</string>
-    <string name="getRootFault">Fehler beim Abrufen der Root-Berechtigungen, Modus 2: Shell ist nicht verfügbar</string>
+    <string name="getRootFault">\\nFehler beim Abrufen der Root-Berechtigungen, Modus 2: Shell ist nicht verfügbar</string>
     <string name="notInstallCoolapk">CoolApk ist nicht installiert</string>
     <string name="okToUseNew">Klicken Sie auf OK, um die neue Version zu verwenden, und brechen Sie die alte Version ab</string>
     <string name="permissionDenied">Speichererlaubnis verweigert</string>

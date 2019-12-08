@@ -36,7 +36,7 @@
     <string name="fileNotExistence">路径或文件不存在</string>
     <string name="findTouch">\\n发现touch命令…检查可用性\\ntouch /sdcard/CompatibilityTestFile -t 200409040521\\n</string>
     <string name="finish">完成！</string>
-    <string name="getRootFault">获取root权限失败，模式二：Shell 不可用</string>
+    <string name="getRootFault">\\n获取root权限失败，模式二：Shell 不可用</string>
     <string name="notInstallCoolapk">未安装酷安</string>
     <string name="okToUseNew">确定以使用新版，取消使用旧版</string>
     <string name="permissionDenied">存储权限被拒绝</string>

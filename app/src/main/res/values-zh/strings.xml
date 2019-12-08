@@ -46,7 +46,7 @@
     <string name="fault">失敗\\n</string>
     <string name="findTouch">\\n發現touch命令…檢查可用性\\ntouch /sdcard/CompatibilityTestFile -t 200409040521\\n</string>
     <string name="finish">完成！</string>
-    <string name="getRootFault">獲取root權限失敗，模式二：Shell 不可用</string>
+    <string name="getRootFault">\\n獲取root權限失敗，模式二：Shell 不可用</string>
     <string name="okToUseNew">確定以使用新版，取消使用舊版</string>
     <string name="returnButCannotUse">\\n系統返回執行成功卻未生效</string>
     <string name="runningTest">正在運行兼容性測試…</string>

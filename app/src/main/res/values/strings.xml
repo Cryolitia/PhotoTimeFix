@@ -52,7 +52,7 @@
     <string name="findTouch">\\nFind touch command … check availability\\ntouch /sdcard/CompatibilityTestFile -t 200409040521\\n</string>
     <string name="checkMode2Finish">\\nChecked … Mode 2: Shell is fully available</string>
     <string name="checkMode2Fault">\\nCommand execution failed, Mode 2: Shell is unavailable, please contact the author for help</string>
-    <string name="getRootFault">Failed to obtain root permissions, Mode 2: Shell is unavailable</string>
+    <string name="getRootFault">\\nFailed to obtain root permissions, Mode 2: Shell is unavailable</string>
     <string name="cleaning">\\nCleaning up test files(/sdcard/CompatibilityTestFile)…</string>
     <string name="cannotFindTouch">\\ntouch command does not exist, please install Busybox yourself or contact the author for help</string>
     <string name="startCheckMode2">\\nStart execution Mode 2: Shell availability check … Checking root permissions</string>

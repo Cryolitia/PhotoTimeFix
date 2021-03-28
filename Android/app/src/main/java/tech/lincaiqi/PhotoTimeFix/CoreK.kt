@@ -1,8 +1,11 @@
-package photoTimeFix
+package tech.lincaiqi.PhotoTimeFix
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -11,14 +14,7 @@ import android.graphics.Color
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
-import android.os.Looper
 import android.provider.MediaStore
-import androidx.browser.customtabs.CustomTabsIntent
-import com.google.android.material.appbar.AppBarLayout
-import androidx.exifinterface.media.ExifInterface
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,11 +23,16 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
+import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.AppBarLayout
 import com.topjohnwu.superuser.Shell
-import com.topjohnwu.superuser.ShellUtils
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
-import tech.lincaiqi.PhotoTimeFix.R
+import tech.lincaiqi.PhotoTimeFix.databinding.ExperimentalFunctionBinding
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -243,8 +244,8 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
     }
 
     fun switchIcon() {
-        val defaultComponentName = ComponentName(activity!!.baseContext,"photoTimeFix.MainActivity")
-        val newComponentName = ComponentName(activity!!.baseContext,"photoTimeFix.newIcon")
+        val defaultComponentName = ComponentName(activity!!.baseContext, "tech.lincaiqi.PhotoTimeFix.ui.MainActivity")
+        val newComponentName = ComponentName(activity!!.baseContext, "photoTimeFix.newIcon")
         val packageManager = activity!!.packageManager
         AlertDialog.Builder(context).setTitle(R.string.switchIcon)
                 .setMessage(R.string.okToUseNew)
@@ -285,14 +286,14 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
         printTest(R.string.success)
         printTest(R.string.startMode1)
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val targetTime = sdf.parse("2004-09-04 05:21:00").time
+        val targetTime = sdf.parse("2004-09-04 05:21:00")!!.time
         if (file.setLastModified(targetTime)) {
             printTest(R.string.checkResult)
             val dateResult : String = sdf.format(Date(file.lastModified()))
             printTest(dateResult)
             if (dateResult == "2004-09-04 05:21:00") printTest(R.string.checkMode1Finish)
             else printTest(R.string.returnButCannotUse)
-            file.setLastModified(sdf.parse("2004-09-04 05:21:00").time)
+            file.setLastModified(sdf.parse("2004-09-04 05:21:00")!!.time)
         } else printTest(R.string.checkMode1Fault)
         printTest(R.string.startCheckMode2)
         if (Shell.rootAccess()) {
@@ -338,31 +339,29 @@ class CoreK(private var context: Context, private var editor: SharedPreferences.
 
     private fun printTest(int : Int) {
         val string = context.getString(int)
-        var newString : String=""
+        var newString =""
         for ((index,char) in string.withIndex()) {
             if (char=='\\'&&string[index+1]=='n') {
                 printTest(newString)
                 newString=""
                 println()
             } else{
-                if (char=='n'&&newString == "") {
-                } else {
-                    newString += char;
-                }
+                if (!(char=='n'&&newString == ""))
+                    newString += char
             }
         }
         printTest(newString)
     }
 
     fun experimentalFunction() {
-        val view = LayoutInflater.from(context).inflate(R.layout.experimental_function, null)
-        val switch: Switch = view.findViewById(R.id.switch1)
-        switch.isChecked = sharedPreferences!!.getBoolean("useEXIF",false)
-        view.findViewById<Button>(R.id.switchIconButton).setOnClickListener { switchIcon() }
+        val binding = ExperimentalFunctionBinding.inflate(LayoutInflater.from(context))
+        val switch = binding.switch1
+        switch.isChecked = sharedPreferences!!.getBoolean("useEXIF", false)
+        binding.switchIconButton.setOnClickListener { switchIcon() }
         AlertDialog.Builder(context).setTitle(R.string.experimentalFunction)
-                .setView(view)
-                .setPositiveButton(R.string.okToUseNew) {_,_->
-                    editor.putBoolean("useEXIF",switch.isChecked)
+                .setView(binding.root)
+                .setPositiveButton(R.string.OK) { _, _ ->
+                    editor.putBoolean("useEXIF", switch.isChecked)
                     editor.apply()
                 }.show()
     }

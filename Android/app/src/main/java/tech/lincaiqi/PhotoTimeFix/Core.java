@@ -3,21 +3,19 @@ package tech.lincaiqi.PhotoTimeFix;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.media.ExifInterface;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.topjohnwu.superuser.BusyBoxInstaller;
+import androidx.exifinterface.media.ExifInterface;
+
 import com.topjohnwu.superuser.Shell;
+
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
-
-import photoTimeFix.CoreK;
 
 public class Core {
 

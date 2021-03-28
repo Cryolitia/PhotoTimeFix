@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="photoTimeFix.MainActivity">
+    tools:context=".ui.MainActivity">
 
     <!-- 感谢https://www.jianshu.com/p/06c0ae8d9a96/提供参考 -->
 

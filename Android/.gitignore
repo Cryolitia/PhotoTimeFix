@@ -58,3 +58,7 @@ freeline_project_description.json
 .idea/
 
 gradle.properties
+
+.settings
+.project
+.classpath

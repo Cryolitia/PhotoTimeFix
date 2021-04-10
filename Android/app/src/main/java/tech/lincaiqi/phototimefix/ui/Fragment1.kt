@@ -1,4 +1,4 @@
-package tech.lincaiqi.PhotoTimeFix.ui
+package tech.lincaiqi.phototimefix.ui
 
 import android.content.Context
 import android.content.Intent
@@ -13,18 +13,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
-import org.jetbrains.anko.longToast
-import tech.lincaiqi.PhotoTimeFix.Core
-import tech.lincaiqi.PhotoTimeFix.CoreK
-import tech.lincaiqi.PhotoTimeFix.R
-import tech.lincaiqi.PhotoTimeFix.databinding.Fragment1Binding
+import tech.lincaiqi.phototimefix.*
+import tech.lincaiqi.phototimefix.databinding.Fragment1Binding
+import tech.lincaiqi.phototimefix.utils.*
 
 class Fragment1 : Fragment() {
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private var core = Core()
-    private lateinit var coreK: CoreK
     private lateinit var locateTv: EditText
     private lateinit var locateText: EditText
     private lateinit var chooseBtn: Button
@@ -37,13 +34,12 @@ class Fragment1 : Fragment() {
         binding = Fragment1Binding.inflate(inflater, parent, false)
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(context!!, editor, null, null)
         locateTv = binding.locateText
         locateText = binding.locateText
         locateText.setText(preferences.getString("locate", Environment.getExternalStorageDirectory().path + "/DCIM/Camera"))
         chooseBtn = binding.chooseButton
         radioGroup = binding.radioGroup
-        coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this, true)
+        initFragment(requireContext(), preferences, editor, chooseBtn, radioGroup, this, true)
         val startBtn = binding.startButton
         startBtn.setOnClickListener {
             val startNum: Int = Integer.valueOf(binding.start.text.toString())
@@ -59,13 +55,13 @@ class Fragment1 : Fragment() {
         val freshButton = binding.freshButton
         freshButton.setOnClickListener {
             val fileString: String = binding.locateText.text.toString()
-            coreK.freshMedia(fileString, context!!)
+            freshMedia(fileString, context!!)
         }
         return binding.root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        var path = coreK.resultSolve(requestCode, data)
+        var path = resultSolve(requireContext(), requestCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         if (path != "error") {
             path = path.substring(0, path.lastIndexOf("/"))
@@ -75,11 +71,12 @@ class Fragment1 : Fragment() {
         } else context!!.longToast(getString(R.string.selectError))
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (context != null && isVisibleToUser) {
-            coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this, true)
-            coreK.updateAppbar(activity!!, true)
+    override fun onResume() {
+        super.onResume()
+        val context = context
+        if (context != null) {
+            initFragment(context, preferences, editor, chooseBtn, radioGroup, this, true)
+            updateAppbar(activity!!, true)
             /* 作者：Silas_
             来源：CSDN
             原文：https://blog.csdn.net/qq_31852701/article/details/80859644

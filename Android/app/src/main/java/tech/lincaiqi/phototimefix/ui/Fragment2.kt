@@ -1,4 +1,4 @@
-package tech.lincaiqi.PhotoTimeFix.ui
+package tech.lincaiqi.phototimefix.ui
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -16,21 +16,18 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
-import org.jetbrains.anko.longToast
-import tech.lincaiqi.PhotoTimeFix.Core
-import tech.lincaiqi.PhotoTimeFix.CoreK
-import tech.lincaiqi.PhotoTimeFix.R
-import tech.lincaiqi.PhotoTimeFix.databinding.Fragment2Binding
+import tech.lincaiqi.phototimefix.*
+import tech.lincaiqi.phototimefix.databinding.Fragment2Binding
+import tech.lincaiqi.phototimefix.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class Fragment2 : Fragment() {
 
-    private lateinit var preferences : SharedPreferences
-    private lateinit var editor : SharedPreferences.Editor
-    private lateinit var coreK : CoreK
-    private lateinit var locateTv : EditText
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+    private lateinit var locateTv: EditText
     private lateinit var chooseBtn: Button
     private lateinit var freshBtn: Button
     private lateinit var exifBtn: Button
@@ -49,7 +46,6 @@ class Fragment2 : Fragment() {
         locateTv = binding.locateText
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        coreK = CoreK(context!!, editor, null, null)
         chooseBtn = binding.chooseButton
         radioGroup = binding.radioGroup
         dateEdit = binding.nowDate
@@ -60,7 +56,7 @@ class Fragment2 : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
                 val path: String = locateTv.text.toString()
-                val returnValue = coreK.updateDate(path, activity!!)
+                val returnValue = updateDate(path, activity!!)
                 if (returnValue[0] != "") {
                     freshBtn.isEnabled = true
                     exifBtn.isEnabled = true
@@ -80,7 +76,7 @@ class Fragment2 : Fragment() {
         freshBtn = binding.freshButton
         freshBtn.setOnClickListener {
             val path: String = locateTv.text.toString()
-            coreK.freshMedia(path, context!!)
+            freshMedia(path, context!!)
         }
 
         val dateBtn = binding.dateButton
@@ -88,9 +84,9 @@ class Fragment2 : Fragment() {
             TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"))
             val calendar: Calendar = Calendar.getInstance()
             val selectCalender: Calendar = Calendar.getInstance()
-            var nYear : Int = calendar.get(Calendar.YEAR)
-            var nMonth : Int = calendar.get(Calendar.MONTH)
-            var nDay : Int = calendar.get(Calendar.DAY_OF_MONTH)
+            var nYear: Int = calendar.get(Calendar.YEAR)
+            var nMonth: Int = calendar.get(Calendar.MONTH)
+            var nDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
             val tp = TimePickerDialog(context, { _, hour: Int, minute: Int ->
                 selectCalender.set(nYear, nMonth, nDay, hour, minute)
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
@@ -98,12 +94,12 @@ class Fragment2 : Fragment() {
                 val editFormat2: EditText = binding.choseDateEdit
                 editFormat2.setText(date)
             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true)
-            val dp = DatePickerDialog (context!!, { _, year: Int, month: Int, day: Int ->
+            val dp = DatePickerDialog(context!!, { _, year: Int, month: Int, day: Int ->
                 nYear = year
                 nMonth = month
                 nDay = day
                 tp.show()
-            },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
             dp.show()
         }
 
@@ -112,24 +108,24 @@ class Fragment2 : Fragment() {
             val fileString: String = binding.locateText.text.toString()
             val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
             val selectDate = choseDateEdit.text.toString()
-            core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate,0,false)
+            core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate, 0, false)
         }
 
         exifBtn.setOnClickListener {
-            val returnEXIF = coreK.readEXIF(locateTv.text.toString())
+            val returnEXIF = readEXIF(locateTv.text.toString())
             val builder = AlertDialog.Builder(context)
             builder.setMessage(returnEXIF.strings.joinToString(separator = "\n"))
             if (returnEXIF.dateExist) builder.setPositiveButton(getString(R.string.usingEXIF)) { _, _ ->
                 choseDateEdit.setText(returnEXIF.dateString)
             }
-            else builder.setPositiveButton(getString(R.string.OK),null)
-            builder.setNegativeButton(getString(R.string.cancel),null)
+            else builder.setPositiveButton(getString(R.string.OK), null)
+            builder.setNegativeButton(getString(R.string.cancel), null)
             builder.show()
         }
 
         binding.nowText.setOnClickListener {
             val path: String = locateTv.text.toString()
-            val returnValue = coreK.updateDate(path, activity!!)
+            val returnValue = updateDate(path, activity!!)
             dateEdit.setText(returnValue[0])
         }
 
@@ -138,11 +134,11 @@ class Fragment2 : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        var path = coreK.resultSolve(requestCode, data)
+        var path = resultSolve(requireContext(), requestCode, data)
         if (path != "error") {
             locateTv.setText(path)
-            val returnValue = coreK.updateDate(path,activity!!)
-            if (returnValue[0]!="") {
+            val returnValue = updateDate(path, activity!!)
+            if (returnValue[0] != "") {
                 freshBtn.isEnabled = true
                 exifBtn.isEnabled = true
                 startBtn.isEnabled = true
@@ -164,12 +160,13 @@ class Fragment2 : Fragment() {
         }
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (context != null && isVisibleToUser) {
-            coreK.initFragment(preferences, editor, chooseBtn, radioGroup, this,false)
+    override fun onResume() {
+        super.onResume()
+        val context = context
+        if (context != null) {
+            initFragment(context, preferences, editor, chooseBtn, radioGroup, this, false)
             //context!!.toast(bitmapIsNull.toString())
-            if (!bitmapIsNull) coreK.updateAppbar(activity!!,false)
+            if (!bitmapIsNull) updateAppbar(activity!!, false)
         }
     }
 

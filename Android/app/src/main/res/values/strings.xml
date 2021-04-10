@@ -33,7 +33,7 @@
     <string name="progress">progress</string>
     <string name="checkRoot">Please check root permissions</string>
     <string name="systemNotSupport">Your system most likely does not support this operation, please change the operation mode</string>
-    <string name="finish">carry out!</string>
+    <string name="finish">Finish!</string>
     <string name="systemLimit">Due to system limitations (in fact I am lazy), please select any picture in the folder</string>
     <string name="webviewError">Error loading WebView, the help window has stopped showing. \\nThis error does not affect the normal functioning, and the developer has only encountered it on the simulator. If this dialog box appears, please contact the developer.</string>
     <string name="notInstallCoolapk">CoolApk is not installed</string>
@@ -56,4 +56,7 @@
     <string name="cleaning">\\nCleaning up test files(/sdcard/CompatibilityTestFile)…</string>
     <string name="cannotFindTouch">\\ntouch command does not exist, please install Busybox yourself or contact the author for help</string>
     <string name="startCheckMode2">\\nStart execution Mode 2: Shell availability check … Checking root permissions</string>
+    <string name="close">Close</string>
+    <string name="notDictionary">The path is a file, not a dictionary</string>
+    <string name="error">Error</string>
 </resources>

@@ -54,4 +54,6 @@
     <string name="startCheckMode2">\\n開始執行 模式二：Shell 可用性檢查…正在檢查root權限</string>
     <string name="startMode1">\\n開始執行 模式一：Java 可用性檢查…</string>
     <string name="webviewError">加載WebView錯誤，已停止顯示幫助窗口。 \\n該錯誤並不影響正常功能運行，且開發者僅在模擬器上遇到過，如果出現此對話框請與開發者聯繫。</string>
+    <string name="close">Close</string>
+    <string name="error">Error</string>
 </resources>

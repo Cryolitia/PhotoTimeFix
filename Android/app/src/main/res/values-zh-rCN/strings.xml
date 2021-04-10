@@ -54,4 +54,6 @@
     <string name="systemNotSupport">您的系统极有可能不支持此操作，请更换操作模式</string>
     <string name="usingEXIF">使用EXIF时间</string>
     <string name="webviewError">加载WebView错误，已停止显示帮助窗口。\\n该错误并不影响正常功能运行，且开发者仅在模拟器上遇到过，如果出现此对话框请与开发者联系。</string>
+    <string name="close">Close</string>
+    <string name="error">Error</string>
 </resources>

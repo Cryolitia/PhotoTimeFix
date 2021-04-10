@@ -54,4 +54,6 @@
     <string name="systemNotSupport">Höchstwahrscheinlich unterstützt Ihr System diesen Vorgang nicht. Ändern Sie den Betriebsmodus</string>
     <string name="webviewError">Fehler beim Laden von WebView, das Hilfefenster wird nicht mehr angezeigt. \\nDieser Fehler hat keine Auswirkungen auf die normale Funktionsweise und der Entwickler hat ihn nur im Simulator festgestellt. Wenn dieses Dialogfeld angezeigt wird, wenden Sie sich an den Entwickler.</string>
     <string name="usingEXIF">Verwenden Sie die EXIF-Zeit</string>
+    <string name="close">Close</string>
+    <string name="error">Error</string>
 </resources>

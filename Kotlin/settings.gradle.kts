@@ -1,2 +1,15 @@
+pluginManagement {
+    repositories {
+        google()
+        jcenter()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+
+}
 rootProject.name = "PhotoTimeFix"
-include("windowsMain")
+
+
+include(":android")
+include(":desktop")
+

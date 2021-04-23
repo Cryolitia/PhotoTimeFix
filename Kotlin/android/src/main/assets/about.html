@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh">
+<body>
+<h1><font color="#448AFF">关于</font></h1>
+<hr/>
+<p>这是一个简单的小程序用来修复手机中的照片时间错误（理论上适用于任何文件名中包含日期的文件）</p>
+<p>在Github上开源：<a href="javascript:void();"
+                 onclick="openGit.openUrl('https://github.com/singleNeuron/PhotoTimeFixforAndroid');">https://github.com/singleNeuron/PhotoTimeFixforAndroid</a>
+</p>
+<p>酷安ID：<a href="javascript:void();" onclick="openGit.openCoolapk('603406');">@神经元</a></p>
+<p>特别感谢图标设计：酷安&nbsp;<a href="javascript:void();" onclick="openGit.openCoolapk('501992');">@枭紫兮</a>&nbsp;<a
+        href="javascript:void();" onclick="openGit.openCoolapk('2062620');">@柒千夏</a>&nbsp;</p>
+<p></p>
+<h2><font color="#448AFF">功能说明</font></h2>
+<h3><font color="#448AFF">起始位置、结束位置</font></h3>
+<p>设置单次处理的范围，如果处理过程中出现严重卡顿请设置范围。默认为0则不进行范围限制。</p>
+<h3><font color="#448AFF">处理模式</font></h3>
+<p>模式一：无需root，理论上拥有较好的兼容性和性能，但可能不支持低版本的设备。</p>
+<p>模式二：需要root，几乎适用于所有设备</p>
+<h3><font color="#448AFF">处理格式</font></h3>
+<p>手动设置如何将文件名格式化为日期，留空则使用默认内置算法。建议仅在内置算法不适用时使用。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<hr/>
+<h4>调试工具</h4>
+<p>该工具在旗舰机型上处理速度可高于每秒千张，因此有部分用户反馈认为如此快的处理速度是工作不正常的表现，故增加此调试选项来设置处理时的延时，以期能带给用户更好的使用体验。该设置项并无任何意义，如无必要请勿调整。单位：毫秒</p>
+<input type="button" value="打开调整工具" onclick="openGit.updateDelay();">
+</body>
+</html>

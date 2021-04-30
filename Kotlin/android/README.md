@@ -9,4 +9,4 @@
 
 ![宣传图](../../Arts/1.jpg)
 
-## [隐私权政策](./PrivacyPolicy)
+## [隐私权政策](./PrivacyPolicy.md)

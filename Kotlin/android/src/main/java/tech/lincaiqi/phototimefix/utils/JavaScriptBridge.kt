@@ -19,11 +19,8 @@ class JavaScriptBridge(private val context: Activity) {
     @JavascriptInterface
     fun openUrl(url: String) {
         val builder = CustomTabsIntent.Builder()
-        builder.setDefaultColorSchemeParams(
-            CustomTabColorSchemeParams.Builder()
-                .setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark)).build()
-        )
-            .setShowTitle(true)
+        builder.setDefaultColorSchemeParams(CustomTabColorSchemeParams.Builder()
+            .setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark)).build()).setShowTitle(true)
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(context, Uri.parse(url))
     }
@@ -52,14 +49,11 @@ class JavaScriptBridge(private val context: Activity) {
         val et = EditText(context)
         et.inputType = InputType.TYPE_CLASS_NUMBER
         var input: Int
-        AlertDialog.Builder(context).setTitle(R.string.setDelay)
-            .setView(et)
-            .setPositiveButton(R.string.OK) { _, _ ->
-                input = if (et.text.toString() == "") 0 else Integer.parseInt(et.text.toString())
-                editor.putInt("delay", input)
-                editor.apply()
-            }
-            .show()
+        AlertDialog.Builder(context).setTitle(R.string.setDelay).setView(et).setPositiveButton(R.string.OK) { _, _ ->
+            input = if (et.text.toString() == "") 0 else Integer.parseInt(et.text.toString())
+            editor.putInt("delay", input)
+            editor.apply()
+        }.show()
     }
 
 }

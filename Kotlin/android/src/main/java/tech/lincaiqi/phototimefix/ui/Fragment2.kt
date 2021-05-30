@@ -1,25 +1,30 @@
 package tech.lincaiqi.phototimefix.ui
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import me.singleneuron.common.util.readExif
 import tech.lincaiqi.phototimefix.Core
 import tech.lincaiqi.phototimefix.R
 import tech.lincaiqi.phototimefix.databinding.Fragment2Binding
 import tech.lincaiqi.phototimefix.utils.*
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,12 +34,6 @@ class Fragment2 : Fragment() {
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var locateTv: EditText
-    private lateinit var chooseBtn: Button
-    private lateinit var freshBtn: Button
-    private lateinit var exifBtn: Button
-    private lateinit var startBtn: Button
-    private lateinit var radioGroup: RadioGroup
-    private lateinit var dateEdit: EditText
     private var bitmapIsNull: Boolean = true
     private lateinit var choseDateEdit: EditText
     private var core = Core()
@@ -47,9 +46,6 @@ class Fragment2 : Fragment() {
         locateTv = binding.locateText
         preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
-        chooseBtn = binding.chooseButton
-        radioGroup = binding.radioGroup
-        dateEdit = binding.nowDate
         choseDateEdit = binding.choseDateEdit
         editor.apply()
         locateTv.addTextChangedListener(object : TextWatcher {
@@ -57,32 +53,20 @@ class Fragment2 : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
                 val path: String = locateTv.text.toString()
-                val returnValue = updateDate(path, activity!!)
-                if (returnValue[0] != "") {
-                    freshBtn.isEnabled = true
-                    exifBtn.isEnabled = true
-                    startBtn.isEnabled = true
-                } else {
-                    freshBtn.isEnabled = false
-                    exifBtn.isEnabled = false
-                    startBtn.isEnabled = false
-                }
-                dateEdit.setText(returnValue[0])
-                choseDateEdit.setText(returnValue[1])
-                bitmapIsNull = (returnValue[0] == "")
+                //val returnValue = updateDate(path, activity!!)
+                //freshUI(path)
+                //bitmapIsNull = (returnValue[0] == "")
             }
 
         })
-        exifBtn = binding.showEXIF
-        freshBtn = binding.freshButton
-        freshBtn.setOnClickListener {
+        binding.freshButton.setOnClickListener {
             val path: String = locateTv.text.toString()
             freshMedia(path, context!!)
         }
 
         val dateBtn = binding.dateButton
         dateBtn.setOnClickListener {
-            TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"))
+            TimeZone.setDefault(TimeZone.getDefault())
             val calendar: Calendar = Calendar.getInstance()
             val selectCalender: Calendar = Calendar.getInstance()
             var nYear: Int = calendar.get(Calendar.YEAR)
@@ -104,16 +88,23 @@ class Fragment2 : Fragment() {
             dp.show()
         }
 
-        startBtn = binding.startButton
-        startBtn.setOnClickListener {
+        binding.startButton.setOnClickListener {
             val fileString: String = binding.locateText.text.toString()
-            val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
+            val radio: Boolean = binding.radioGroup.checkedRadioButtonId == R.id.radioButton
             val selectDate = choseDateEdit.text.toString()
             core.process(context, 0, 0, fileString, radio, activity, "yyyyMMddHHmm", selectDate, 0, false)
         }
 
-        exifBtn.setOnClickListener {
-            val returnEXIF = readEXIF(locateTv.text.toString())
+        binding.chooseButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "image/*"
+            }
+            startActivityForResult(intent, this@Fragment2.hashCode() ushr 16)
+        }
+
+        binding.showEXIF.setOnClickListener {
+            val returnEXIF = readExif(File(locateTv.text.toString()))
             val builder = AlertDialog.Builder(context)
             builder.setMessage(returnEXIF.strings.joinToString(separator = "\n"))
             if (returnEXIF.dateExist) builder.setPositiveButton(getString(R.string.usingEXIF)) { _, _ ->
@@ -124,40 +115,24 @@ class Fragment2 : Fragment() {
             builder.show()
         }
 
-        binding.nowText.setOnClickListener {
-            val path: String = locateTv.text.toString()
-            val returnValue = updateDate(path, activity!!)
-            dateEdit.setText(returnValue[0])
-        }
-
         return binding.root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        var path = resultSolve(requireContext(), requestCode, data)
-        if (path != "error") {
-            locateTv.setText(path)
-            val returnValue = updateDate(path, activity!!)
-            if (returnValue[0] != "") {
-                freshBtn.isEnabled = true
-                exifBtn.isEnabled = true
-                startBtn.isEnabled = true
-            } else {
-                freshBtn.isEnabled = false
-                exifBtn.isEnabled = false
-                startBtn.isEnabled = false
-            }
-            dateEdit.setText(returnValue[0])
-            choseDateEdit.setText(returnValue[1])
-            path = path.substring(0, path.lastIndexOf("/"))
-            editor.putString("locate", path)
-            editor.apply()
+        if (requestCode != (this@Fragment2.hashCode() ushr 16)) {
+            return super.onActivityResult(requestCode, resultCode, data)
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            requireActivity().toast("Operation canceled")
+        }
+        val uri = data?.data
+        if (uri != null) {
+            locateTv.setText(uri.path)
+            freshUI(uri)
         } else {
             context!!.longToast(getString(R.string.selectError))
-            freshBtn.isEnabled = false
-            exifBtn.isEnabled = false
-            startBtn.isEnabled = false
+            binding.freshButton.isEnabled = false
+            binding.showEXIF.isEnabled = false
+            binding.startButton.isEnabled = false
         }
     }
 
@@ -165,9 +140,24 @@ class Fragment2 : Fragment() {
         super.onResume()
         val context = context
         if (context != null) {
-            initFragment(context, preferences, editor, chooseBtn, radioGroup, this, false)
+            initFragment(preferences, editor, binding.radioGroup)
             //context!!.toast(bitmapIsNull.toString())
             if (!bitmapIsNull) updateAppbar(activity!!, false)
+        }
+    }
+
+    private fun freshUI(path: Uri?) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val returnValue = updateImage(path, activity!!)
+        }
+        if (path != null) {
+            binding.freshButton.isEnabled = true
+            binding.showEXIF.isEnabled = true
+            binding.startButton.isEnabled = true
+        } else {
+            binding.freshButton.isEnabled = false
+            binding.showEXIF.isEnabled = false
+            binding.startButton.isEnabled = false
         }
     }
 

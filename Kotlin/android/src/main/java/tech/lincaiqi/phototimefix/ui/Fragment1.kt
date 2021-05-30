@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,9 @@ import androidx.fragment.app.Fragment
 import tech.lincaiqi.phototimefix.Core
 import tech.lincaiqi.phototimefix.R
 import tech.lincaiqi.phototimefix.databinding.Fragment1Binding
-import tech.lincaiqi.phototimefix.utils.*
+import tech.lincaiqi.phototimefix.utils.freshMedia
+import tech.lincaiqi.phototimefix.utils.initFragment
+import tech.lincaiqi.phototimefix.utils.updateAppbar
 
 class Fragment1 : Fragment() {
 
@@ -37,17 +38,15 @@ class Fragment1 : Fragment() {
         editor = preferences.edit()
         locateTv = binding.locateText
         locateText = binding.locateText
-        locateText.setText(
-            preferences.getString(
-                "locate",
-                Environment.getExternalStorageDirectory().path + "/DCIM/Camera"
-            )
-        )
-        chooseBtn = binding.chooseButton
+        binding.chooseButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            }
+            startActivityForResult(intent, this@Fragment1.hashCode() ushr 16)
+        }
         radioGroup = binding.radioGroup
-        initFragment(requireContext(), preferences, editor, chooseBtn, radioGroup, this, true)
-        val startBtn = binding.startButton
-        startBtn.setOnClickListener {
+        initFragment(preferences, editor, radioGroup)
+        binding.startButton.setOnClickListener {
             val startNum: Int = Integer.valueOf(binding.start.text.toString())
             val endNum: Int = Integer.valueOf(binding.end.text.toString())
             val fileString: String = binding.locateText.text.toString()
@@ -56,28 +55,16 @@ class Fragment1 : Fragment() {
             val radio: Boolean = radioGroup.checkedRadioButtonId == R.id.radioButton
             Log.d("radio", radioGroup.checkedRadioButtonId.toString())
             Log.d("radio", R.id.radioButton.toString())
-            core.process(
-                context,
-                startNum,
-                endNum,
-                fileString,
-                radio,
-                activity,
-                format,
-                "",
-                preferences.getInt("delay", 0),
-                preferences.getBoolean("useEXIF", false)
-            )
+            core.process(context, startNum, endNum, fileString, radio, activity, format, "", preferences.getInt("delay", 0), preferences.getBoolean("useEXIF", false))
         }
-        val freshButton = binding.freshButton
-        freshButton.setOnClickListener {
+        binding.freshButton.setOnClickListener {
             val fileString: String = binding.locateText.text.toString()
             freshMedia(fileString, context!!)
         }
         return binding.root
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var path = resultSolve(requireContext(), requestCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         if (path != "error") {
@@ -86,13 +73,13 @@ class Fragment1 : Fragment() {
             editor.putString("locate", path)
             editor.apply()
         } else context!!.longToast(getString(R.string.selectError))
-    }
+    }*/
 
     override fun onResume() {
         super.onResume()
         val context = context
         if (context != null) {
-            initFragment(context, preferences, editor, chooseBtn, radioGroup, this, true)
+            initFragment(preferences, editor, radioGroup)
             updateAppbar(activity!!, true)
             /* 作者：Silas_
             来源：CSDN

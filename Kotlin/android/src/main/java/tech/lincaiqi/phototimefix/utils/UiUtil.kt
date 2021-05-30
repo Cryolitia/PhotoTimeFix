@@ -8,38 +8,31 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import tech.lincaiqi.phototimefix.R
 import tech.lincaiqi.phototimefix.databinding.ExperimentalFunctionBinding
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.regex.Pattern
+import java.io.FileDescriptor
 
 fun initFragment(
-    context: Context,
     preferences: SharedPreferences,
     editor: SharedPreferences.Editor,
-    chooseBtn: Button,
     radioGroup: RadioGroup,
-    fragment: Fragment,
-    isFolder: Boolean
 ) {
     radioGroup.check(preferences.getInt("mode", R.id.radioButton))
-    chooseBtn.setOnClickListener {
-        if (isFolder) context.longToast(context.getString(R.string.systemLimit))
-        chooseFile(fragment)
-    }
     radioGroup.setOnCheckedChangeListener { _, i ->
         editor.putInt("mode", i)
         editor.apply()
@@ -66,46 +59,32 @@ fun showAbout(context: Activity) {
     builder.show()
 }
 
-fun updateDate(path: String, activity: Activity): Array<String?> {
-    val file = File(path)
+suspend fun updateImage(uri: Uri?, activity: Activity) {
     val imageView: ImageView = activity.findViewById(R.id.user_bg)
-    val returnArray = arrayOfNulls<String>(2)
-    if (file.exists() && file.isFile) {
-        val bm: Bitmap = BitmapFactory.decodeFile(path)
-        imageView.setImageBitmap(bm)
-        updateAppbar(activity, false)
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        returnArray[0] = sdf.format(Date(file.lastModified()))
-        var time = file.name
-        time = Pattern.compile("[^0-9]").matcher(time).replaceAll("").trim { it <= ' ' }
-        Log.d("date", time)
-        if (time.contains("20") && time.substring(time.indexOf("20")).length >= 12) {
-            val targetTime = time.substring(time.indexOf("20"), time.indexOf("20") + 12)
-            try {
-                returnArray[1] = sdf.format(SimpleDateFormat("yyyyMMddHHmm", Locale.getDefault()).parse(targetTime)!!)
-            } catch (e: Exception) {
-                returnArray[1] = ""
-                e.printStackTrace()
-            }
-        } else {
-            returnArray[1] = ""
+    if (uri != null) {
+        val image: Bitmap
+        withContext(Dispatchers.IO) {
+            val parcelFileDescriptor = activity.contentResolver.openFileDescriptor(uri, "r")
+            val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
+            image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+            parcelFileDescriptor.close()
+        }
+        withContext(Dispatchers.Main) {
+            imageView.setImageBitmap(image)
+            updateAppbar(activity, false)
         }
     } else {
         imageView.setImageBitmap(null)
         updateAppbar(activity, true)
-        returnArray[0] = ""
-        returnArray[1] = ""
     }
-    return returnArray
 }
 
 fun updateAppbar(activity: Activity, scrollAble: Boolean) {
     val mAppBarLayout = activity.findViewById<AppBarLayout>(R.id.app_bars)
     val mAppBarChildAt: View = mAppBarLayout.getChildAt(0)
     val mAppBarParams: AppBarLayout.LayoutParams = mAppBarChildAt.layoutParams as AppBarLayout.LayoutParams
-    mAppBarParams.scrollFlags =
-        if (scrollAble) AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
-        else 0
+    mAppBarParams.scrollFlags = if (scrollAble) AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+    else 0
     mAppBarChildAt.layoutParams = mAppBarParams
     /* 作者：Silas_
        来源：CSDN
@@ -120,9 +99,7 @@ fun experimentalFunction(context: Activity) {
     binding.switchIconButton.setOnClickListener { switchIcon(context) }
     val editor = context.getPreferences(Context.MODE_PRIVATE).edit()
     binding.root.setMargins()
-    MaterialAlertDialogBuilder(context)
-        .setTitle(R.string.experimentalFunction)
-        .setView(binding.root)
+    MaterialAlertDialogBuilder(context).setTitle(R.string.experimentalFunction).setView(binding.root)
         .setPositiveButton(R.string.OK) { _, _ ->
             editor.putBoolean("useEXIF", switch.isChecked)
             editor.apply()
@@ -133,33 +110,14 @@ fun switchIcon(activity: Activity) {
     val defaultComponentName = ComponentName(activity.baseContext, "tech.lincaiqi.PhotoTimeFix.ui.MainActivity")
     val newComponentName = ComponentName(activity.baseContext, "photoTimeFix.newIcon")
     val packageManager = activity.packageManager
-    AlertDialog.Builder(activity).setTitle(R.string.switchIcon)
-        .setMessage(R.string.okToUseNew)
+    AlertDialog.Builder(activity).setTitle(R.string.switchIcon).setMessage(R.string.okToUseNew)
         .setPositiveButton(R.string.OK) { _, _ ->
-            packageManager.setComponentEnabledSetting(
-                defaultComponentName,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP
-            )
-            packageManager.setComponentEnabledSetting(
-                newComponentName,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP
-            )
-        }
-        .setNegativeButton(R.string.cancel) { _, _ ->
-            packageManager.setComponentEnabledSetting(
-                newComponentName,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP
-            )
-            packageManager.setComponentEnabledSetting(
-                defaultComponentName,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP
-            )
-        }
-        .show()
+            packageManager.setComponentEnabledSetting(defaultComponentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+            packageManager.setComponentEnabledSetting(newComponentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+        }.setNegativeButton(R.string.cancel) { _, _ ->
+            packageManager.setComponentEnabledSetting(newComponentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+            packageManager.setComponentEnabledSetting(defaultComponentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+        }.show()
 }
 
 fun Context.toast(string: String) {
@@ -185,8 +143,5 @@ fun View.setMargins() {
 }
 
 fun showErrorDialog(string: String, context: Context) {
-    MaterialAlertDialogBuilder(context)
-        .setTitle(R.string.error)
-        .setMessage(string)
-        .setPositiveButton(R.string.OK, null)
+    MaterialAlertDialogBuilder(context).setTitle(R.string.error).setMessage(string).setPositiveButton(R.string.OK, null)
 }

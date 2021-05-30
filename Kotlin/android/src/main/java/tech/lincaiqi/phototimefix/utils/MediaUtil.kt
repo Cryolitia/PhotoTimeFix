@@ -1,45 +1,10 @@
 package tech.lincaiqi.phototimefix.utils
 
 import android.content.Context
-import android.content.Intent
-import android.database.Cursor
 import android.media.MediaScannerConnection
-import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import tech.lincaiqi.phototimefix.R
 import java.io.File
-
-
-fun chooseFile(fragment: Fragment) {
-    val intent = Intent(Intent.ACTION_PICK, null)
-    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
-    fragment.startActivityForResult(intent, 0)
-}
-
-fun resultSolve(context: Context, requestCode: Int, data: Intent?): String {
-    try {
-        return if (requestCode == 0) {
-            val originalUri = data!!.data
-            val proj = arrayOf(MediaStore.Images.Media.DATA)
-            var cursor: Cursor? = null
-            if (originalUri != null) {
-                cursor = context.contentResolver.query(originalUri, proj, null, null, null)
-            }
-            if (cursor != null) {
-                val columnIndex: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                cursor.moveToFirst()
-                val path = cursor.getString(columnIndex)
-                cursor.close()
-                path
-            } else "error"
-        } else "error"
-
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return "error"
-    }
-}
 
 fun freshMedia(path: String, context: Context) {
     val file = File(path)

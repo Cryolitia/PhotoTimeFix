@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,9 +21,6 @@ import tech.lincaiqi.phototimefix.databinding.ActivityMainBinding
 import tech.lincaiqi.phototimefix.utils.TestUtil
 import tech.lincaiqi.phototimefix.utils.experimentalFunction
 import tech.lincaiqi.phototimefix.utils.showAbout
-import kotlin.system.exitProcess
-
-private const val MY_PERMISSIONS_REQUEST_READ_CONTACTS: Int = 1
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,21 +33,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    MY_PERMISSIONS_REQUEST_READ_CONTACTS
-                )
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), this@MainActivity.hashCode() ushr 16)
+                }
             }
         }
 
@@ -115,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         mFragmentList.add(Fragment2())
     }
 
-    override fun onRequestPermissionsResult(
+    /*override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>, grantResults: IntArray
     ) {
@@ -133,6 +120,6 @@ class MainActivity : AppCompatActivity() {
                 return
             }
         }
-    }
+    }*/
 
 }

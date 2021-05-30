@@ -8,38 +8,20 @@ group = "me.singleneuron.phototimefix"
 version = "1.0"
 
 kotlin {
-    jvm("desktop") {
+
+    jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = "11"
         }
         withJava()
     }
-    js(IR) {
-        binaries.executable()
-        nodejs {
 
-        }
-    }
-    mingwX86 {
-        binaries {
-            executable {
-                entryPoint = "main"
-            }
-        }
-    }
-    linuxX64 {
-        binaries {
-            executable {
-                entryPoint = "main"
-            }
-        }
-    }
     sourceSets {
-        val commonMain by getting
-        val desktopMain by getting
-        val jsMain by getting
-        val mingwX86Main by getting
-        val linuxX64Main by getting
+        val jvmMain by getting {
+            dependencies {
+                implementation(project(":common"))
+            }
+        }
     }
 }
 

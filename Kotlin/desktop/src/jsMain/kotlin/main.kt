@@ -1,1 +1,0 @@
-actual fun getPlatform(): String = "I'm Node.JS"

@@ -6,11 +6,12 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 import com.topjohnwu.superuser.Shell;
-import tech.lincaiqi.phototimefix.utils.ExifUtilKt;
 import tech.lincaiqi.phototimefix.utils.ProcesserKt;
 
 import java.io.File;
 import java.util.Date;
+
+import static me.singleneuron.common.util.ExifUtilKt.getExitData;
 
 public class Core {
 
@@ -58,7 +59,7 @@ public class Core {
                 if (i >= startnum && (endnum == 0 || i <= endnum)) {
                     Date date;
                     if (exif) {
-                        date = ExifUtilKt.getExitData(f);
+                        date = getExitData(f);
                     } else {
                         date = ProcesserKt.getTimeByFileName(f.getName());
                     }

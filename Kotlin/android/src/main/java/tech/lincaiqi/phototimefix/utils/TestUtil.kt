@@ -28,12 +28,8 @@ class TestUtil(val context: Context) {
         textView.setMargins()
         val frameLayout = FrameLayout(context)
         frameLayout.addView(textView)
-        val ad = MaterialAlertDialogBuilder(context)
-            .setTitle(R.string.test)
-            .setView(frameLayout)
-            .setCancelable(false)
-            .setPositiveButton(R.string.close, null)
-            .show()
+        val ad = MaterialAlertDialogBuilder(context).setTitle(R.string.test).setView(frameLayout).setCancelable(false)
+            .setPositiveButton(R.string.close, null).show()
         runTest(ad)
     }
 
@@ -121,8 +117,7 @@ class TestUtil(val context: Context) {
                 newString = ""
                 println()
             } else {
-                if (!(char == 'n' && newString == ""))
-                    newString += char
+                if (!(char == 'n' && newString == "")) newString += char
             }
         }
         printTest(newString)

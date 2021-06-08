@@ -34,7 +34,7 @@ class Fragment1 : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, parent, savedInstanceState)
         binding = Fragment1Binding.inflate(inflater, parent, false)
-        preferences = activity!!.getPreferences(Context.MODE_PRIVATE)
+        preferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
         editor = preferences.edit()
         locateTv = binding.locateText
         locateText = binding.locateText
@@ -59,7 +59,7 @@ class Fragment1 : Fragment() {
         }
         binding.freshButton.setOnClickListener {
             val fileString: String = binding.locateText.text.toString()
-            freshMedia(fileString, context!!)
+            freshMedia(fileString, requireActivity())
         }
         return binding.root
     }
@@ -80,7 +80,7 @@ class Fragment1 : Fragment() {
         val context = context
         if (context != null) {
             initFragment(preferences, editor, radioGroup)
-            updateAppbar(activity!!, true)
+            updateAppbar(requireActivity(), true)
             /* 作者：Silas_
             来源：CSDN
             原文：https://blog.csdn.net/qq_31852701/article/details/80859644

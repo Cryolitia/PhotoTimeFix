@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Photo Time Fix</string>
     <string name="selectFolder">Select folder</string>
-    <string name="sdcard_dcim_camera" translatable="false">/sdcard/DCIM/Camera</string>
     <string name="startLocation">Starting point</string>
     <string name="_0" translatable="false">0</string>
     <string name="java">Mode 1: Java</string>
@@ -74,4 +73,8 @@
     <string name="close">Close</string>
     <string name="notDictionary">The path is a file, not a dictionary</string>
     <string name="error">Error</string>
+    <string name="operation_canceled">Operation canceled</string>
+    <string name="fileNotExist">File not exist</string>
+    <string name="fileNotReadable">File not readable</string>
+    <string name="notAFile">Not a file</string>
 </resources>

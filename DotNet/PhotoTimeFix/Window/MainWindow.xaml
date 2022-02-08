@@ -1,0 +1,205 @@
+﻿<Window x:Class="PhotoTimeFix.Window.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:res="clr-namespace:PhotoTimeFix.Resource"
+        xmlns:viewBinding="clr-namespace:PhotoTimeFix.ViewBinding"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:util="clr-namespace:PhotoTimeFix.Util"
+        mc:Ignorable="d"
+        Title="{x:Static res:Resource.App_Name}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        SizeToContent="WidthAndHeight">
+
+    <Window.Resources>
+        <viewBinding:MainWindowBinding x:Key="MainWindowBinding" />
+    </Window.Resources>
+
+    <Grid
+        Name="TopGrid"
+        DataContext="{StaticResource MainWindowBinding}"
+        Margin="10"
+        ShowGridLines="{Binding Path=IsDebug}"
+        LayoutUpdated="Grid_OnLayoutUpdated"
+        AllowDrop="True" DragEnter="Grid_DragEnter" Drop="Grid_Drop">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <materialDesign:Card Padding="20" Margin="10" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="auto"
+                             Name="SelectCard">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="SelectStackPanel">
+                <TextBox AllowDrop="True" PreviewDragOver="Grid_DragEnter" PreviewDrop="Grid_Drop"
+                         materialDesign:HintAssist.Hint="{x:Static res:Resource.MainWindow_FolderFilePath}" TextWrapping="Wrap" Cursor="IBeam"
+                         TextChanged="PathTextBox_OnTextChanged" Name="PathTextBox">
+                    <TextBox.Text>
+                        <Binding
+                            Path="FilePath"
+                            UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <util:FileExistValidationRule
+                                    ValidatesOnTargetUpdated="True" />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <Button Click="FileButton_OnClick" Cursor="Hand" Margin="10,0,10,0">
+                    <materialDesign:PackIcon Kind="FileImage" />
+                </Button>
+                <Button Click="DictionaryButton_OnClick" Cursor="Hand">
+                    <materialDesign:PackIcon Kind="Folder" />
+                </Button>
+            </StackPanel>
+        </materialDesign:Card>
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+            <materialDesign:Card Margin="10" Padding="10" Visibility="{Binding Path=PathExist}">
+                <StackPanel>
+                    <Grid Visibility="{Binding Path=IsFile}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resource.MainWindow_CurrentCreationTime}" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Margin="10" IsEnabled="False"
+                                 Name="CurrentCreateTime" />
+                        <Label Grid.Column="0" Grid.Row="1" Content="{x:Static res:Resource.MainWindow_CurrentModificationTime}" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="10" IsEnabled="False"
+                                 Name="CurrentModifyTime" />
+                        <Label Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resource.MainWIndow_NewTime}" VerticalAlignment="Center" />
+                        <DatePicker Grid.Column="1" Grid.Row="2" MinWidth="100"
+                                    Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                                    VerticalAlignment="Bottom" Margin="10" Width="Auto"
+                                    SelectedDate="{Binding Path=NowDate}" />
+                        <materialDesign:TimePicker Grid.Column="2" Grid.Row="2" Is24Hours="True" WithSeconds="True"
+                                                   MinWidth="100" Margin="10" VerticalAlignment="Bottom" Width="Auto"
+                                                   SelectedTime="{Binding Path=NowTime}" />
+                    </Grid>
+                    <Button
+                        Click="EditCode_OnClick"
+                        Margin="5"
+                        Content="{x:Static res:Resource.MainWindow_CustomFileProcessingClass}"
+                        Style="{StaticResource MaterialDesignFlatButton}" />
+                    <Button
+                        IsEnabled="{Binding Path=StartEnabled}"
+                        Click="Start_OnClick"
+                        Margin="5"
+                        Content="{x:Static res:Resource.MainWindow_Start}" />
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="10" Padding="10">
+                <Grid Name="SettingContainer" ShowGridLines="{Binding Path=IsDebug}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </materialDesign:Card>
+        </StackPanel>
+        <materialDesign:Card Grid.Row="1" Grid.Column="1" Margin="10" Padding="10">
+            <StackPanel>
+                <Grid ShowGridLines="{Binding Path=IsDebug}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Content="{x:Static res:Resource.MainWindow_CurrentUser}" Grid.Column="0" Grid.Row="0" />
+                    <Label Name="UserNameText" Grid.Column="1" Grid.Row="0" />
+                    <Label Content="{x:Static res:Resource.MainWindow_CurrentUserGroup}" Grid.Column="0" Grid.Row="1" />
+                    <Label Name="GroupText" Grid.Column="1" Grid.Row="1" />
+                </Grid>
+                <Button
+                    Margin="5"
+                    Name="RunAsAdminButton"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Content="{x:Static res:Resource.MainWindow_RunAsAdmin}"
+                    Click="RunAsAdmin_OnClick" />
+                <Button
+                    Margin="5"
+                    Name="RunAsTrustInstallerButton"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Content="{x:Static res:Resource.MainWindow_RunAsTrustInstaller}"
+                    Click="RunAsTrustInstaller_OnClick" />
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card Grid.Row="2" Grid.Column="1" Margin="10" Padding="10">
+            <StackPanel Orientation="Vertical">
+                <Grid ShowGridLines="{Binding Path=IsDebug}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Content="{x:Static res:Resource.About_Author}" Grid.Column="0" Grid.Row="0" />
+                    <Label Content="{x:Static res:Resource.About_Neuron}" Grid.Column="1" Grid.Row="0" />
+                    <Label Content="{x:Static res:Resource.About_OpenSourceLink}" Grid.Column="0" Grid.Row="1" />
+                    <TextBlock Grid.Column="1" Grid.Row="1">
+                        <Hyperlink NavigateUri="https://github.com/Cryolitia/PhotoTimeFix" Click="Hyperlink_Click">
+                            https://github.com/Cryolitia/PhotoTimeFix
+                        </Hyperlink>
+                    </TextBlock>
+                    <Label Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resource.About_Telegram}" />
+                    <TextBlock Grid.Column="1" Grid.Row="2">
+                        <Hyperlink NavigateUri="https://t.me/NeuronDevelopChannel" Click="Hyperlink_Click">
+                            某元的原神頻道
+                        </Hyperlink>
+                    </TextBlock>
+                </Grid>
+                <Button
+                    x:Name="OpenSourceLicense"
+                    Margin="5"
+                    ToolTip="{x:Static res:Resource.About_ThanksToOpenSource}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Content="{x:Static res:Resource.About_OpenSourceLicense}" Cursor="Hand" Click="OpenSourceLicense_Click" />
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Margin="10"
+            Padding="10"
+            Visibility="{Binding Path=IsFile}"
+            Name="DetailCard">
+            <StackPanel>
+                <ListBox
+                    Name="DetailListBox"
+                    SelectionMode="Multiple"
+                    SelectionChanged="DetailListBox_OnSelectionChanged"
+                    Margin="0,0,0,10"
+                    Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineListBox}"
+                    ItemsSource="{Binding Path=DetailTags}" />
+                <TextBox
+                    Name="DetailTextBox"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    AcceptsReturn="True"
+                    TextWrapping="Wrap"
+                    HorizontalScrollBarVisibility="Visible"
+                    VerticalScrollBarVisibility="Visible"
+                    IsReadOnly="True" />
+            </StackPanel>
+        </materialDesign:Card>
+    </Grid>
+
+</Window>

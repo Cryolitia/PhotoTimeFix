@@ -154,32 +154,35 @@ namespace PhotoTimeFix.Window
 
         private async void PathTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            await ProcessBarWindow.StartTask(action =>
+            var value = PathTextBox.Text;
+            if (File.Exists(value))
             {
-                Dispatcher.Invoke(async () =>
+                await ProcessBarWindow.StartTask(action =>
                 {
-                    await UpdateCurrentTime(true, action);
-                    var value = PathTextBox.Text;
-                    if (File.Exists(value))
+                    Dispatcher.Invoke(async () =>
                     {
-                        _binding.IsFile = Visibility.Visible;
-                        _binding.PathExist = Visibility.Visible;
-                        await UpdateExif(value);
-                        DetailListBox.SelectAll();
-                        if (_setting.ShowMedia) ShowImage(value);
-                    }
-                    else
-                    {
-                        if (Directory.Exists(value))
+                        await UpdateCurrentTime(true, action);
+                        if (File.Exists(value))
+                        {
+                            _binding.IsFile = Visibility.Visible;
                             _binding.PathExist = Visibility.Visible;
-                        else
-                            _binding.PathExist = Visibility.Collapsed;
-                        _binding.IsFile = Visibility.Collapsed;
-                        ExifInfos = new Dictionary<string, string>();
-                        DetailTextBox.Text = "";
-                    }
+                            await UpdateExif(value);
+                            DetailListBox.SelectAll();
+                            if (_setting.ShowMedia) ShowImage(value);
+                        }
+                    });
                 });
-            });
+            }
+            else
+            {
+                if (Directory.Exists(value))
+                    _binding.PathExist = Visibility.Visible;
+                else
+                    _binding.PathExist = Visibility.Collapsed;
+                _binding.IsFile = Visibility.Collapsed;
+                ExifInfos = new Dictionary<string, string>();
+                DetailTextBox.Text = "";
+            }
         }
 
         private async Task UpdateCurrentTime(bool resetNow = true, Action action = null)

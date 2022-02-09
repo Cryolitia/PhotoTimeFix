@@ -36,10 +36,17 @@
         </Grid.RowDefinitions>
         <materialDesign:Card Padding="20" Margin="10" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="auto" 
                              Name="SelectCard">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="SelectStackPanel" >
-                <TextBox AllowDrop="True" PreviewDragOver="Grid_DragEnter" PreviewDrop="Grid_Drop" 
+            <Grid HorizontalAlignment="Center" Name="SelectStackPanel">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" AllowDrop="True" PreviewDragOver="Grid_DragEnter" PreviewDrop="Grid_Drop" 
                          materialDesign:HintAssist.Hint="{x:Static res:Resource.MainWindow_FolderFilePath}" TextWrapping="Wrap" Cursor="IBeam"
-                         TextChanged="PathTextBox_OnTextChanged" Name="PathTextBox" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" Width="295">
+                         TextChanged="PathTextBox_OnTextChanged" Name="PathTextBox"
+                         HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch"
+                         HorizontalScrollBarVisibility="Hidden" MinWidth="200" MaxWidth="1000">
                     <TextBox.Text>
                         <Binding
                             Path="FilePath"
@@ -51,13 +58,13 @@
                         </Binding>
                     </TextBox.Text>
                 </TextBox>
-                <Button Click="FileButton_OnClick" Cursor="Hand" Margin="10,0,10,0">
+                <Button Grid.Column="1" Click="FileButton_OnClick" Cursor="Hand" Margin="10,0,10,0">
                     <materialDesign:PackIcon Kind="FileImage" />
                 </Button>
-                <Button Click="DictionaryButton_OnClick" Cursor="Hand">
+                <Button Grid.Column="2" Click="DictionaryButton_OnClick" Cursor="Hand">
                     <materialDesign:PackIcon Kind="Folder" />
                 </Button>
-            </StackPanel>
+            </Grid>
         </materialDesign:Card>
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
             <materialDesign:Card Margin="10" Padding="10" Visibility="{Binding Path=PathExist}">

@@ -11,7 +11,7 @@
         Title="{x:Static res:Resource.App_Name}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
-        SizeToContent="WidthAndHeight">
+        SizeToContent="WidthAndHeight" ResizeMode="CanMinimize">
 
     <Window.Resources>
         <viewBinding:MainWindowBinding x:Key="MainWindowBinding" />
@@ -34,12 +34,12 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <materialDesign:Card Padding="20" Margin="10" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="auto"
+        <materialDesign:Card Padding="20" Margin="10" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="auto" 
                              Name="SelectCard">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="SelectStackPanel">
-                <TextBox AllowDrop="True" PreviewDragOver="Grid_DragEnter" PreviewDrop="Grid_Drop"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="SelectStackPanel" >
+                <TextBox AllowDrop="True" PreviewDragOver="Grid_DragEnter" PreviewDrop="Grid_Drop" 
                          materialDesign:HintAssist.Hint="{x:Static res:Resource.MainWindow_FolderFilePath}" TextWrapping="Wrap" Cursor="IBeam"
-                         TextChanged="PathTextBox_OnTextChanged" Name="PathTextBox">
+                         TextChanged="PathTextBox_OnTextChanged" Name="PathTextBox" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" Width="295">
                     <TextBox.Text>
                         <Binding
                             Path="FilePath"

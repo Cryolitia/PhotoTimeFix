@@ -25,6 +25,7 @@
         <IsPackable>true</IsPackable>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <SatelliteResourceLanguages>en;zh-Hans;zh-Hant</SatelliteResourceLanguages>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

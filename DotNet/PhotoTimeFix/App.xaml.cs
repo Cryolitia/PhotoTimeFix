@@ -48,6 +48,8 @@ namespace PhotoTimeFix
                         Crashes.TrackError(ex as Exception);
                     }
                 };
+                //System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+                //System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
                 var countryCode = RegionInfo.CurrentRegion.TwoLetterISORegionName;
                 AppCenter.SetCountryCode(countryCode);
                 AppCenter.Start("5aa5aa14-0bd1-45f1-bea4-72d960c9c576", typeof(Crashes), typeof(Analytics));

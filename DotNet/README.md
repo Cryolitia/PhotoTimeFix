@@ -1,6 +1,7 @@
 # WPF
 
 ![platform](https://img.shields.io/badge/platform-Windows-blue.svg)
+[![Microsoft Store](../Arts/English_getitfromMS.png)](https://play.google.com/store/apps/details?id=tech.lincaiqi.PhotoTimeFix)
 
 * 现代的Material Design界面设计，自动适应系统主题（仅支持Windows 10 1903+）
 * 自动尝试解析文件名和Exif信息
@@ -10,3 +11,7 @@
 * 完全永久的开源免费
 
 ![宣传图](../Arts/2.jpg)
+
+![1](../Arts/wpf-cn-1.png)
+
+![1](../Arts/wpf-cn-2.png)

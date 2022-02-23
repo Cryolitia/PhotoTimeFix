@@ -7,9 +7,9 @@
         IgnorableNamespaces="uap rescap">
 
     <Identity
-            Name="59a829de-a49c-4879-a4d9-4aad68460d67"
-            Publisher="CN=singleNeuron, C=CN, E=Cryolitia@gmail.com"
-            Version="1.0.1.0"/>
+            Name="53240singleNeuron.PhotoTimeFix"
+            Publisher="CN=F77423F5-8744-4658-A772-5E96CB64C433"
+            Version="1.0.3.0"/>
 
     <Properties>
         <DisplayName>PhotoTimeFix</DisplayName>
@@ -23,7 +23,9 @@
     </Dependencies>
 
     <Resources>
-        <Resource Language="x-generate"/>
+        <Resource Language="en"/>
+        <Resource Language="zh-hans"/>
+        <Resource Language="zh-hant"/>
     </Resources>
 
     <Applications>
@@ -31,7 +33,7 @@
                      Executable="$targetnametoken$.exe"
                      EntryPoint="$targetentrypoint$">
             <uap:VisualElements
-                    DisplayName="Photo Time Fix"
+                    DisplayName="PhotoTimeFix"
                     Description="Photo Time Fix"
                     BackgroundColor="transparent"
                     Square150x150Logo="Images\Square150x150Logo.png"
@@ -47,5 +49,6 @@
         <Capability Name="internetClient"/>
         <rescap:Capability Name="runFullTrust"/>
         <uap:Capability Name="removableStorage"/>
+        <Capability Name="codeGeneration"/>
     </Capabilities>
 </Package>

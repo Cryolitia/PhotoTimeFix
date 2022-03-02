@@ -445,13 +445,21 @@ namespace PhotoTimeFix.Window
                 foreach (var mInfo in info.EnumerateDirectories()) ProcessDirectory(mInfo, list);
                 foreach (var mInfo in info.EnumerateFiles())
                 {
-                    var directories = ImageMetadataReader.ReadMetadata(mInfo.FullName);
-                    DateTime? dateTime = null;
                     try
                     {
-                        var subIfdDirectory = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-                        if (subIfdDirectory?.TryGetDateTime(ExifDirectoryBase.TagDateTime, out var mDateTime) == true)
-                            dateTime = mDateTime;
+                        IReadOnlyList<MetadataExtractor.Directory> directories = null;
+                        DateTime? dateTime = null;
+                        try
+                        {
+                            directories = ImageMetadataReader.ReadMetadata(mInfo.FullName);
+                            var subIfdDirectory = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
+                            if (subIfdDirectory?.TryGetDateTime(ExifDirectoryBase.TagDateTime, out var mDateTime) == true)
+                                dateTime = mDateTime;
+                        }
+                        catch (Exception e)
+                        {
+                            //ignore
+                        }
                         if (dateTime == null) dateTime = _binding.FileProcessor.GetFileDateTime(mInfo);
                         if (dateTime != null)
                         {

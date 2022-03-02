@@ -14,6 +14,8 @@ namespace PhotoTimeFix.Window
         public ProcessWindow()
         {
             InitializeComponent();
+            MaxHeight = SystemParameters.WorkArea.Height;
+            MaxWidth = SystemParameters.WorkArea.Width;
             ProcessResultList.CollectionChanged += (sender, args) =>
             {
                 var view = ListView.View as GridView;

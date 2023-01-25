@@ -23,7 +23,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <IsPackable>true</IsPackable>
-        <AssemblyVersion>1.1.0</AssemblyVersion>
+        <AssemblyVersion>1.2.0</AssemblyVersion>
         <SatelliteResourceLanguages>en;zh-Hans;zh-Hant</SatelliteResourceLanguages>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>

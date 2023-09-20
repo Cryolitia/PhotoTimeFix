@@ -387,7 +387,7 @@ namespace PhotoTimeFix.Window
         {
             var noticeList = new List<Notice>();
             noticeList.Add(new Notice("PhotoTimeFix", "https://github.com/Cryolitia/PhotoTimeFix",
-                "Copyroght 2018-2022 singleNeuron", new MITLicense()));
+                "Copyroght 2018-Now Cryolitia", new MITLicense()));
             noticeList.Add(new Notice("MetadataExtractor", "https://github.com/drewnoakes/metadata-extractor-dotnet",
                 "Drew Noakes", new ApacheSoftwareLicense20()));
             noticeList.Add(new Notice("Material Design In XAML Toolkit",

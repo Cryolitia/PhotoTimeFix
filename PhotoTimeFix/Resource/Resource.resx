@@ -213,4 +213,7 @@
   <data name="Setting_OpenMedia" xml:space="preserve">
     <value>Open media</value>
   </data>
+  <data name="ProcessWindow_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
 </root>

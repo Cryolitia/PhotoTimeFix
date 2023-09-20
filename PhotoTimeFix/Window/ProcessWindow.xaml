@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ProgressBar Grid.Row="0" Name="ProgressBar" IsIndeterminate="True" Margin="0" />
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Visible" Margin="0">
@@ -31,5 +32,6 @@
                 </ListView.View>
             </ListView>
         </ScrollViewer>
+        <Button Grid.Row="2" Name="CopyButton"  Content="{x:Static res:Resource.ProcessWindow_Copy}" Margin="5" Click="Compile_OnClick" IsEnabled="False" />
     </Grid>
 </Window>

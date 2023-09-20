@@ -8,14 +8,14 @@
         <ApplicationIcon>a9ikq-xzp6j-001.ico</ApplicationIcon>
         <Win32Resource />
         <StartupObject>PhotoTimeFix.App</StartupObject>
-        <Authors>singleNeuron</Authors>
+        <Authors>Cryolitia</Authors>
         <RepositoryType>Github</RepositoryType>
         <RepositoryUrl>https://github.com/Cryolitia/PhotoTimeFix</RepositoryUrl>
-        <Copyright>Copyright 2022 singleNeuron</Copyright>
+        <Copyright>Copyright 2018-Now Cryolitia</Copyright>
         <PackageLicenseFile>README.md</PackageLicenseFile>
         <PackageIcon>照片时间修复.jpg</PackageIcon>
         <PackageIconUrl />
-        <PackageProjectUrl>https://github.com/singleNeuron/PhotoTimeFix</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/Cryolitia/PhotoTimeFix</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <DelaySign>false</DelaySign>
         <AssemblyOriginatorKeyFile>..\cert.pfx</AssemblyOriginatorKeyFile>

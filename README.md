@@ -1,13 +1,17 @@
-# PhotoTimeFix
+# Kotlin (WIP)
 
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/singleNeuron/PhotoTimeFix/blob/master/LICENSE)
+![platform](https://img.shields.io/badge/platform-Android-green.svg)
+![platform](https://img.shields.io/badge/platform-Kotlin%20Mulitiplatform-purple.svg)
+![language](https://img.shields.io/badge/language-kotlin-blue.svg)
+![license](https://img.shields.io/badge/license-MIT-orange.svg)
 
-一个简单的小程序以通过文件名(或Exif)修复照片/屏幕截图的时间错误
+[![google play](./artwork/google-play-badge.png)](https://play.google.com/store/apps/details?id=tech.lincaiqi.PhotoTimeFix)
 
-An easy program aimed to fix photo's timestamp incorrect by filename/Exif
+本程序在酷安发布:[https://www.coolapk.com/apk/tech.lincaiqi.PhotoTimeFix](https://www.coolapk.com/apk/tech.lincaiqi.PhotoTimeFix)，ID
+@神经元
 
-您是否曾经在备份照片后面对整齐划一的时间戳变成了今天的成千上万张照片不知所措？快来试试吧，这个软件可以通过文件名和文件中的Exif数据来恢复文件的时间戳，还支持自定义精确时间和批处理。永久开源免费！
+![宣传图](./artwork//1.jpg)
 
-## [Android](./Kotlin/android/README.md)
+---
 
-## [WPF](./DotNet/README.md)
+**[隐私权政策](./PrivacyPolicy.md)**

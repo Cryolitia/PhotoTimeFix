@@ -1,4 +1,4 @@
-# Privacy Policy  
-The software PhotoTimeFix is fully open-source on GIthub, and don't have any ads, because I don't care about your persenal data or profit at all. So Just enjoy it.
+# Privacy Policy
 
-We use AppCenter to collect anonymous data to provide better software.
+The software PhotoTimeFix is fully open-source on GIthub, and don't request network permissions, of course it also don't
+have any ads, because I don't care about your persenal data or profit at all. So Just enjoy it.

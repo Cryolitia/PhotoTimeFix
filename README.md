@@ -8,8 +8,8 @@
 ![license](https://img.shields.io/badge/license-MIT-orange.svg)
 
 <p>
-    <img height="50em" img align="center" src="./artwork/google-play-badge.png" alt="Get it on Google Play" />
-    <img height="50em" img align="center" src="./artwork/English_getitfromMS.png" alt="Get it from Microsoft" />
+    <a href="https://play.google.com/store/apps/details?id=tech.lincaiqi.PhotoTimeFix"><img height="50em" img align="center" src="./artwork/google-play-badge.png" alt="Get it on Google Play" /></a>
+    <a href="https://www.microsoft.com/store/apps/9NFL0WD4NJXP"><img height="50em" img align="center" src="./artwork/English_getitfromMS.png" alt="Get it from Microsoft" /></a>
   </p>
 
 ---

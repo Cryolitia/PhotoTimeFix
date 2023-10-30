@@ -1,5 +1,7 @@
 # Kotlin (WIP)
 
+## Kotlin 版本极为古老，重构进度一直尚未完成，请尽量优先考虑使用 WPF 版本！！！
+
 ![platform](https://img.shields.io/badge/platform-Android-green.svg)
 ![platform](https://img.shields.io/badge/platform-Kotlin%20Mulitiplatform-purple.svg)
 ![language](https://img.shields.io/badge/language-kotlin-blue.svg)

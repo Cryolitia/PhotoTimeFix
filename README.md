@@ -22,6 +22,8 @@ An easy program aimed to fix photo's timestamp incorrect by filename/Exif
 
 ## [Kotlin](https://github.com/Cryolitia/PhotoTimeFix/tree/Kotlin)
 
+### Kotlin 版本极为古老，重构进度一直尚未完成，请尽量优先考虑使用 WPF 版本！！！
+
 ![宣传图](./artwork//1.jpg)
 
 ## [WPF](https://github.com/Cryolitia/PhotoTimeFix/tree/WPF)

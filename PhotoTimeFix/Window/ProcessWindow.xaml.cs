@@ -23,12 +23,29 @@ namespace PhotoTimeFix.Window
 
             ProcessResultList.CollectionChanged += (sender, args) =>
             {
-                var view = ListView.View as GridView;
-                if (view == null) return;
-                foreach (var column in view.Columns)
+                if (args.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
                 {
-                    column.Width = column.ActualWidth;
-                    column.Width = double.NaN;
+                    StringBuilder builder = null;
+                    foreach (var item in args.NewItems)
+                    {
+                        if (item is ProcessResult)
+                        {
+                            var item1 = item as ProcessResult;
+                            builder = new StringBuilder();
+                            builder.Append(item1.FileName);
+                            if (item1.DateTime != "")
+                            {
+                                builder.Append("\t\t=>\t\t");
+                                builder.Append(item1.DateTime);
+                            }
+                        }
+                    }
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        if (builder != null)
+                        {
+                            ProcessingNow.Content = builder.ToString();
+                        }
+                    }));
                 }
             };
 
@@ -84,6 +101,7 @@ namespace PhotoTimeFix.Window
                 ProgressBar.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
                 MessageBox.Show("OK");
                 _closable = value;
+                ScrollList.Visibility = Visibility.Visible;
                 if (_logFile != null)
                 {
                     try

@@ -151,7 +151,7 @@
     <value>Current user group: </value>
   </data>
   <data name="MainWindow_CustomFileProcessingClass" xml:space="preserve">
-    <value>Custom file processing class</value>
+    <value>Custom filename parser</value>
   </data>
   <data name="MainWindow_FolderFilePath" xml:space="preserve">
     <value>File or folder path</value>
@@ -214,6 +214,9 @@
     <value>Open media</value>
   </data>
   <data name="ProcessWindow_Copy" xml:space="preserve">
-    <value>Copy</value>
+    <value>Open Log File</value>
+  </data>
+  <data name="Setting_SaveLog" xml:space="preserve">
+    <value>Save Log file</value>
   </data>
 </root>

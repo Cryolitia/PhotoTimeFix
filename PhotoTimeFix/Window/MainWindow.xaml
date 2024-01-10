@@ -11,7 +11,7 @@
         Title="{x:Static res:Resource.App_Name}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
-        SizeToContent="WidthAndHeight" ResizeMode="CanMinimize">
+        SizeToContent="WidthAndHeight">
 
     <Window.Resources>
         <viewBinding:MainWindowBinding x:Key="MainWindowBinding" />
@@ -31,7 +31,6 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <materialDesign:Card Padding="20" Margin="10" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Height="auto" 
@@ -66,7 +65,7 @@
                 </Button>
             </Grid>
         </materialDesign:Card>
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+        <StackPanel Name ="Panel1"  Grid.Row="1" Grid.Column="0">
             <materialDesign:Card Margin="10" Padding="10" Visibility="{Binding Path=PathExist}">
                 <StackPanel>
                     <Grid Visibility="{Binding Path=IsFile}">
@@ -116,71 +115,73 @@
                 </Grid>
             </materialDesign:Card>
         </StackPanel>
-        <materialDesign:Card Grid.Row="1" Grid.Column="1" Margin="10" Padding="10">
-            <StackPanel>
-                <Grid ShowGridLines="{Binding Path=IsDebug}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label Content="{x:Static res:Resource.MainWindow_CurrentUser}" Grid.Column="0" Grid.Row="0" />
-                    <Label Name="UserNameText" Grid.Column="1" Grid.Row="0" />
-                    <Label Content="{x:Static res:Resource.MainWindow_CurrentUserGroup}" Grid.Column="0" Grid.Row="1" />
-                    <Label Name="GroupText" Grid.Column="1" Grid.Row="1" />
-                </Grid>
-                <Button
-                    Margin="5"
-                    Name="RunAsAdminButton"
-                    Style="{StaticResource MaterialDesignOutlinedButton}"
-                    Content="{x:Static res:Resource.MainWindow_RunAsAdmin}"
-                    Click="RunAsAdmin_OnClick" />
-                <Button
-                    Margin="5"
-                    Name="RunAsTrustInstallerButton"
-                    Style="{StaticResource MaterialDesignOutlinedButton}"
-                    Content="{x:Static res:Resource.MainWindow_RunAsTrustInstaller}"
-                    Click="RunAsTrustInstaller_OnClick" />
-            </StackPanel>
-        </materialDesign:Card>
-        <materialDesign:Card Grid.Row="2" Grid.Column="1" Margin="10" Padding="10">
-            <StackPanel Orientation="Vertical">
-                <Grid ShowGridLines="{Binding Path=IsDebug}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label Content="{x:Static res:Resource.About_Author}" Grid.Column="0" Grid.Row="0" />
-                    <Label Content="{x:Static res:Resource.About_Neuron}" Grid.Column="1" Grid.Row="0" />
-                    <Label Content="{x:Static res:Resource.About_OpenSourceLink}" Grid.Column="0" Grid.Row="1" />
-                    <TextBlock Grid.Column="1" Grid.Row="1">
-                        <Hyperlink NavigateUri="https://github.com/Cryolitia/PhotoTimeFix" Click="Hyperlink_Click">
-                            https://github.com/Cryolitia/PhotoTimeFix
-                        </Hyperlink>
-                    </TextBlock>
-                    <Label Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resource.About_Telegram}" />
-                    <TextBlock Grid.Column="1" Grid.Row="2">
-                        <Hyperlink NavigateUri="https://t.me/NeuronDevelopChannel" Click="Hyperlink_Click">
-                            某元的原神頻道
-                        </Hyperlink>
-                    </TextBlock>
-                </Grid>
-                <Button
-                    x:Name="OpenSourceLicense"
-                    Margin="5"
-                    ToolTip="{x:Static res:Resource.About_ThanksToOpenSource}"
-                    Style="{StaticResource MaterialDesignOutlinedButton}"
-                    Content="{x:Static res:Resource.About_OpenSourceLicense}" Cursor="Hand" Click="OpenSourceLicense_Click" />
-            </StackPanel>
-        </materialDesign:Card>
+        <StackPanel Name="Panel2" Grid.Row="1" Grid.Column="1">
+            <materialDesign:Card Margin="10" Padding="10">
+                <StackPanel>
+                    <Grid ShowGridLines="{Binding Path=IsDebug}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Content="{x:Static res:Resource.MainWindow_CurrentUser}" Grid.Column="0" Grid.Row="0" />
+                        <Label Name="UserNameText" Grid.Column="1" Grid.Row="0" />
+                        <Label Content="{x:Static res:Resource.MainWindow_CurrentUserGroup}" Grid.Column="0" Grid.Row="1" />
+                        <Label Name="GroupText" Grid.Column="1" Grid.Row="1" />
+                    </Grid>
+                    <Button
+                        Margin="5"
+                        Name="RunAsAdminButton"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Content="{x:Static res:Resource.MainWindow_RunAsAdmin}"
+                        Click="RunAsAdmin_OnClick" />
+                    <Button
+                        Margin="5"
+                        Name="RunAsTrustInstallerButton"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Content="{x:Static res:Resource.MainWindow_RunAsTrustInstaller}"
+                        Click="RunAsTrustInstaller_OnClick" />
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="10" Padding="10">
+                <StackPanel Orientation="Vertical">
+                    <Grid ShowGridLines="{Binding Path=IsDebug}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Content="{x:Static res:Resource.About_Author}" Grid.Column="0" Grid.Row="0" />
+                        <Label Content="{x:Static res:Resource.About_Neuron}" Grid.Column="1" Grid.Row="0" />
+                        <Label Content="{x:Static res:Resource.About_OpenSourceLink}" Grid.Column="0" Grid.Row="1" />
+                        <TextBlock Grid.Column="1" Grid.Row="1">
+                            <Hyperlink NavigateUri="https://github.com/Cryolitia/PhotoTimeFix" Click="Hyperlink_Click">
+                                https://github.com/Cryolitia/PhotoTimeFix
+                            </Hyperlink>
+                        </TextBlock>
+                        <Label Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resource.About_Telegram}" />
+                        <TextBlock Grid.Column="1" Grid.Row="2">
+                            <Hyperlink NavigateUri="https://t.me/NeuronDevelopChannel" Click="Hyperlink_Click">
+                                某元的原神頻道
+                            </Hyperlink>
+                        </TextBlock>
+                    </Grid>
+                    <Button
+                        x:Name="OpenSourceLicense"
+                        Margin="5"
+                        ToolTip="{x:Static res:Resource.About_ThanksToOpenSource}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Content="{x:Static res:Resource.About_OpenSourceLicense}" Cursor="Hand" Click="OpenSourceLicense_Click" />
+                </StackPanel>
+            </materialDesign:Card>
+        </StackPanel>
         <materialDesign:Card
             Grid.Row="1"
             Grid.RowSpan="2"

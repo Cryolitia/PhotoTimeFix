@@ -22,6 +22,7 @@ using MetadataExtractor.Formats.Exif;
 using MimeTypes;
 using PhotoTimeFix.Util;
 using PhotoTimeFix.ViewBinding;
+using Windows.Storage;
 using Application = System.Windows.Forms.Application;
 using Binding = System.Windows.Data.Binding;
 using DataFormats = System.Windows.DataFormats;
@@ -146,9 +147,10 @@ namespace PhotoTimeFix.Window
             var height = DetailCard.ActualHeight - DetailListBox.ActualHeight - 30d;
             if (height > 0) DetailTextBox.Height = height;
 
-            MinWidth = SelectStackPanel.ActualWidth + 180d;
-            var minHeight = SelectStackPanel.ActualHeight + 120d;
-            if (DetailCard.Visibility == Visibility.Visible) minHeight += DetailListBox.ActualHeight + 120d;
+            var minWidth = Panel1.ActualWidth + Panel2.ActualWidth + 30d;
+            var minHeight = SelectCard.ActualHeight + Math.Max(Panel1.ActualHeight, Panel2.ActualHeight) + 60d;
+            if (DetailCard.Visibility == Visibility.Visible) minWidth += 480d;
+            MinWidth = minWidth;
             MinHeight = minHeight;
         }
 
@@ -417,7 +419,20 @@ namespace PhotoTimeFix.Window
 
         private async void Start_OnClick(object sender, RoutedEventArgs e)
         {
-            var window = new ProcessWindow();
+            var window = new ProcessWindow(_setting.SaveLog);
+            if (_setting.SaveLog)
+            {
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Title = Resource.Resource.Setting_SaveLog;
+                dialog.OverwritePrompt = true;
+                dialog.CreatePrompt = true;
+                dialog.Filter = "Log File (*.csv)|*.csv";
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+                window.LogFile = dialog.FileName;
+            }
             await window.ShowDialogAsync();
             if (File.Exists(_binding.FilePath) && _binding.NowDate.HasValue && _binding.NowTime.HasValue)
             {

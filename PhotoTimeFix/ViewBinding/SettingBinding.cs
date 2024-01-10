@@ -12,7 +12,9 @@ namespace PhotoTimeFix.ViewBinding
 
         private bool _safetyMode = true;
 
-        private bool _showMedia;
+        private bool _showMedia = false;
+
+        private bool _saveLog = false;
 
         [SettingItem("SafeMode")]
         public bool SafetyMode
@@ -55,6 +57,17 @@ namespace PhotoTimeFix.ViewBinding
             {
                 _showMedia = value;
                 OnPropertyChanged(nameof(ShowMedia));
+            }
+        }
+
+        [SettingItem("SaveLog")]
+        public bool SaveLog
+        {
+            get => _saveLog;
+            set
+            {
+                _saveLog = value;
+                OnPropertyChanged(nameof(SaveLog));
             }
         }
 

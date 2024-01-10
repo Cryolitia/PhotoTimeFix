@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,12 +12,15 @@ namespace PhotoTimeFix.Window
     public partial class ProcessWindow : System.Windows.Window
     {
         private bool _closable;
+        private FileStream _logFile;
+        private UTF8Encoding utF8Encoding = new UTF8Encoding();
 
-        public ProcessWindow()
+        public ProcessWindow(bool saveFile)
         {
             InitializeComponent();
             MaxHeight = SystemParameters.WorkArea.Height;
             MaxWidth = SystemParameters.WorkArea.Width;
+
             ProcessResultList.CollectionChanged += (sender, args) =>
             {
                 var view = ListView.View as GridView;
@@ -27,6 +31,49 @@ namespace PhotoTimeFix.Window
                     column.Width = double.NaN;
                 }
             };
+
+            if (saveFile)
+            {
+                ProcessResultList.CollectionChanged += (sender, args) =>
+                {
+                    if (args.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                    {
+                        var builder = new StringBuilder();
+                        foreach (var item in args.NewItems)
+                        {
+                            if (item is ProcessResult)
+                            {
+                                var item1 = item as ProcessResult;
+                                builder.Append(item1.FileName);
+                                builder.Append(',');
+                                builder.Append(item1.Status);
+                                builder.Append(',');
+                                builder.Append(item1.DateTime);
+                                builder.Append(',');
+                                builder.Append(item1.Detail);
+                                builder.AppendLine();
+                            }
+                        }
+                        try
+                        {
+                            byte[] bytes = utF8Encoding.GetBytes(builder.ToString());
+                            _logFile.WriteAsync(bytes, 0, bytes.Length) ;
+                        }
+                        catch(Exception e)
+                        {
+                            //ignore
+                        }
+                    }
+                };
+            }
+        }
+
+        public string LogFile
+        {
+            set
+            {
+                _logFile = File.OpenWrite(value);
+            }
         }
 
         public bool Closable
@@ -35,8 +82,19 @@ namespace PhotoTimeFix.Window
             set
             {
                 ProgressBar.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
-                CopyButton.IsEnabled = value;
+                MessageBox.Show("OK");
                 _closable = value;
+                if (_logFile != null)
+                {
+                    try
+                    {
+                        _logFile.Dispose();
+                    }
+                    catch(Exception e)
+                    {
+                        //ignore
+                    }
+                }
             }
         }
 
@@ -53,31 +111,6 @@ namespace PhotoTimeFix.Window
                 base.OnClosing(e);
             else
                 e.Cancel = true;
-        }
-
-        private async void Compile_OnClick(object sender, RoutedEventArgs e)
-        {
-            var builder = new StringBuilder();
-            builder.Append(Resource.Resource.ProcessWindow_File);
-            builder.Append('\t');
-            builder.Append(Resource.Resource.ProcessWindow_Status);
-            builder.Append('\t');
-            builder.Append(Resource.Resource.ProcessWindow_NewTime);
-            builder.Append('\t');
-            builder.Append(Resource.Resource.ProcessWindow_Detail);
-            builder.AppendLine();
-            foreach (var item in ProcessResultList)
-            {
-                builder.Append(item.FileName);
-                builder.Append('\t');
-                builder.Append(item.Status);
-                builder.Append('\t');
-                builder.Append(item.DateTime);
-                builder.Append('\t');
-                builder.Append(item.Detail);
-                builder.AppendLine();
-            }
-            Clipboard.SetText(builder.ToString());
         }
     }
 }

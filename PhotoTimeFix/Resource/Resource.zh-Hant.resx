@@ -133,7 +133,7 @@
     <value>新時間：</value>
   </data>
   <data name="MainWindow_CustomFileProcessingClass" xml:space="preserve">
-    <value>自定義檔案處理類</value>
+    <value>自定義檔名解析方法</value>
   </data>
   <data name="MainWindow_Start" xml:space="preserve">
     <value>開始</value>
@@ -154,7 +154,7 @@
     <value>作者：</value>
   </data>
   <data name="About_Neuron" xml:space="preserve">
-    <value>神經元</value>
+    <value>神經元/Cryolitia</value>
   </data>
   <data name="About_OpenSourceLink" xml:space="preserve">
     <value>開源地址：</value>
@@ -211,6 +211,9 @@
     <value>開啟媒體</value>
   </data>
   <data name="ProcessWindow_Copy" xml:space="preserve">
-    <value>拷貝</value>
+    <value>開啟日誌檔案</value>
+  </data>
+  <data name="Setting_SaveLog" xml:space="preserve">
+    <value>儲存日誌檔案</value>
   </data>
 </root>

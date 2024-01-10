@@ -178,7 +178,7 @@ namespace PhotoTimeFix.Resource {
         }
         
         /// <summary>
-        ///   查找类似 Custom file processing class 的本地化字符串。
+        ///   查找类似 Custom filename parser 的本地化字符串。
         /// </summary>
         public static string MainWindow_CustomFileProcessingClass {
             get {
@@ -232,7 +232,7 @@ namespace PhotoTimeFix.Resource {
         }
         
         /// <summary>
-        ///   查找类似 Copy 的本地化字符串。
+        ///   查找类似 Open Log File 的本地化字符串。
         /// </summary>
         public static string ProcessWindow_Copy {
             get {
@@ -354,6 +354,15 @@ namespace PhotoTimeFix.Resource {
         public static string Setting_SafeModeSummary {
             get {
                 return ResourceManager.GetString("Setting_SafeModeSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Save Log file 的本地化字符串。
+        /// </summary>
+        public static string Setting_SaveLog {
+            get {
+                return ResourceManager.GetString("Setting_SaveLog", resourceCulture);
             }
         }
     }

@@ -8,8 +8,6 @@ namespace PhotoTimeFix.ViewBinding
     {
         private bool _onlyMedia = true;
 
-        private bool _preferExif = true;
-
         private bool _safetyMode = true;
 
         private bool _showMedia = false;
@@ -24,17 +22,6 @@ namespace PhotoTimeFix.ViewBinding
             {
                 _safetyMode = value;
                 OnPropertyChanged(nameof(SafetyMode));
-            }
-        }
-
-        [SettingItem("PreferExif")]
-        public bool PreferExif
-        {
-            get => _preferExif;
-            set
-            {
-                _preferExif = value;
-                OnPropertyChanged(nameof(PreferExif));
             }
         }
 

@@ -219,4 +219,13 @@
   <data name="Setting_SaveLog" xml:space="preserve">
     <value>Save Log file</value>
   </data>
+  <data name="MainWindow_FileName" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="MainWindow_FileSystem" xml:space="preserve">
+    <value>File System Metadata</value>
+  </data>
+  <data name="Warning_EXIF" xml:space="preserve">
+    <value>This operation will attempt to manipulate the file itself and write the EXIF ​​tag, which may cause irrecoverable damage to the file. Please back up before proceeding!</value>
+  </data>
 </root>

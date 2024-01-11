@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Security.Principal;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,9 +25,9 @@ using MetadataExtractor.Formats.Exif;
 using MimeTypes;
 using PhotoTimeFix.Util;
 using PhotoTimeFix.ViewBinding;
-using Windows.Storage;
 using Application = System.Windows.Forms.Application;
 using Binding = System.Windows.Data.Binding;
+using CheckBox = System.Windows.Controls.CheckBox;
 using DataFormats = System.Windows.DataFormats;
 using Directory = System.IO.Directory;
 using DragDropEffects = System.Windows.DragDropEffects;
@@ -49,7 +52,7 @@ namespace PhotoTimeFix.Window
         public MainWindow()
         {
             InitializeComponent();
-            _binding = (MainWindowBinding) Resources[nameof(MainWindowBinding)];
+            _binding = (MainWindowBinding)Resources[nameof(MainWindowBinding)];
             ThemeHelper.InitTheme();
 
             InitUser();
@@ -111,8 +114,8 @@ namespace PhotoTimeFix.Window
                     label.ToolTip = attribute.Summary;
                     label.Margin = new Thickness(5, 5, 0, 5);
                     var button = new ToggleButton();
-                    button.IsChecked = (bool) info.GetValue(_setting);
-                    button.Style = (Style) FindResource("MaterialDesignSwitchToggleButton");
+                    button.IsChecked = (bool)info.GetValue(_setting);
+                    button.Style = (Style)FindResource("MaterialDesignSwitchToggleButton");
                     button.Margin = new Thickness(0, 5, 5, 5);
                     var binding = new Binding(info.Name);
                     binding.Source = _setting;
@@ -205,7 +208,7 @@ namespace PhotoTimeFix.Window
 
                 try
                 {
-                    var dateTime = await GetDateTimeFromFileProcessor(info);
+                    var dateTime = await TryGetDatetimeFromFile(info);
                     _binding.NowDate = dateTime;
                     _binding.NowTime = dateTime;
                 }
@@ -221,15 +224,6 @@ namespace PhotoTimeFix.Window
             }
 
             action?.Invoke();
-        }
-
-        private async Task<DateTime?> GetDateTimeFromFileProcessor(FileInfo info)
-        {
-            return await Task.Run(() =>
-            {
-                var processor = _binding.FileProcessor;
-                return processor.GetFileDateTime(info);
-            });
         }
 
         private async Task UpdateExif(string path)
@@ -345,7 +339,7 @@ namespace PhotoTimeFix.Window
 
         private void Grid_DragEnter(object sender, DragEventArgs e)
         {
-            var fileData = (Array) e.Data.GetData(DataFormats.FileDrop, true);
+            var fileData = (Array)e.Data.GetData(DataFormats.FileDrop, true);
             if (fileData != null && fileData.Length == 1)
             {
                 e.Effects = DragDropEffects.Link;
@@ -361,7 +355,7 @@ namespace PhotoTimeFix.Window
         {
             try
             {
-                var fileData = (Array) e.Data.GetData(DataFormats.FileDrop, true);
+                var fileData = (Array)e.Data.GetData(DataFormats.FileDrop, true);
                 if (fileData != null)
                 {
                     var fileName = fileData.GetValue(0).ToString();
@@ -422,17 +416,15 @@ namespace PhotoTimeFix.Window
             var window = new ProcessWindow(_setting.SaveLog);
             if (_setting.SaveLog)
             {
-                SaveFileDialog dialog = new SaveFileDialog();
+                var dialog = new SaveFileDialog();
                 dialog.Title = Resource.Resource.Setting_SaveLog;
                 dialog.OverwritePrompt = true;
                 dialog.CreatePrompt = true;
                 dialog.Filter = "Log File (*.csv)|*.csv";
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 window.LogFile = dialog.FileName;
             }
+
             await window.ShowDialogAsync();
             if (File.Exists(_binding.FilePath) && _binding.NowDate.HasValue && _binding.NowTime.HasValue)
             {
@@ -453,69 +445,197 @@ namespace PhotoTimeFix.Window
             window.Closable = true;
         }
 
-        private void ProcessDirectory(DirectoryInfo info, ProcessResultList list)
+        private async void ProcessDirectory(DirectoryInfo info, ProcessResultList list)
         {
             try
             {
                 foreach (var mInfo in info.EnumerateDirectories()) ProcessDirectory(mInfo, list);
                 foreach (var mInfo in info.EnumerateFiles())
-                {
                     try
                     {
-                        IReadOnlyList<MetadataExtractor.Directory> directories = null;
-                        DateTime? dateTime = null;
-                        try
-                        {
-                            directories = ImageMetadataReader.ReadMetadata(mInfo.FullName);
-                            var subIfdDirectory = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-                            if (subIfdDirectory?.TryGetDateTime(ExifDirectoryBase.TagDateTime, out var mDateTime) == true)
-                                dateTime = mDateTime;
-                        }
-                        catch (Exception e)
-                        {
-                            //ignore
-                        }
-                        if (dateTime == null) dateTime = _binding.FileProcessor.GetFileDateTime(mInfo);
+                        var dateTime = await TryGetDatetimeFromFile(mInfo);
                         if (dateTime != null)
                         {
                             var result = ProcessFile(mInfo, dateTime.Value);
-                            Dispatcher.BeginInvoke(new Action(() => { list.Add(result); }));
+                            await Dispatcher.BeginInvoke(new Action(() => { list.Add(result); }));
                         }
                         else
                         {
-                            Dispatcher.BeginInvoke(new Action(() => { list.Add(mInfo.FullName, "Null", "Skip", ""); }));
+                            await Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                list.Add(mInfo.FullName, "Null", "Skip", "");
+                            }));
                         }
                     }
                     catch (Exception e)
                     {
-                        Dispatcher.BeginInvoke(new Action(() => { list.Add(mInfo.FullName, "", "Error", e.Message); }));
+                        await Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            list.Add(mInfo.FullName, "", "Error", e.Message);
+                        }));
                     }
-                }
             }
             catch (Exception e)
             {
-                Dispatcher.BeginInvoke(new Action(() => { list.Add(info.FullName, "", "Error", e.Message); }));
+                await Dispatcher.BeginInvoke(new Action(() => { list.Add(info.FullName, "", "Error", e.Message); }));
             }
+        }
+
+        private async Task<DateTime?> TryGetDatetimeFromFile(FileInfo mInfo)
+        {
+            IReadOnlyList<MetadataExtractor.Directory> directories = null;
+            DateTime? dateTime = null;
+            if (ExifSourceCheck.IsChecked == true)
+                try
+                {
+                    directories = ImageMetadataReader.ReadMetadata(mInfo.FullName);
+                    foreach(var subIfdDirectory in directories)
+                    {
+                        if (subIfdDirectory?.TryGetDateTime(ExifDirectoryBase.TagDateTime, out var mDateTime) == true)
+                            dateTime = mDateTime;
+                        if (dateTime == null)
+                        {
+                            if (subIfdDirectory?.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out var m2DateTime) == true)
+                                dateTime = m2DateTime;
+                        }
+                        if (dateTime != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    //ignore
+                }
+
+            if (FileNameSourceCheck.IsChecked == true && dateTime == null)
+                dateTime = await Task.Run(() =>
+                {
+                    var processor = _binding.FileProcessor;
+                    return processor.GetFileDateTime(mInfo);
+                });
+            if (FileSystemSourceCheck.IsChecked == true && dateTime == null)
+            {
+                dateTime = mInfo.CreationTime;
+                if (dateTime == null) dateTime = mInfo.LastWriteTime;
+            }
+
+            return dateTime;
         }
 
         private ProcessResult ProcessFile(FileInfo info, DateTime dateTime)
         {
             try
             {
+                var exifDest = Dispatcher.Invoke(() => { return ExifDestCheck.IsChecked; }) == true;
+                var fileNameDest = Dispatcher.Invoke(() => { return FileNameDestCheck.IsChecked; }) == true;
+                var fileSystemDest = Dispatcher.Invoke(() => { return FileSystemDestCheck.IsChecked; }) == true;
+
                 var mime = MimeTypeMap.GetMimeType(info.Extension).ToLower();
                 if (_setting.OnlyMedia && !mime.StartsWith("image/") && !mime.StartsWith("video/"))
                     return new ProcessResult(info.FullName, "", "Skip", "MINE unmatch: " + mime);
                 if (_setting.SafetyMode && (dateTime > DateTime.Now || dateTime < new DateTime(1970, 1, 1)))
                     return new ProcessResult(info.FullName, "Skip", "",
                         "Date unbelievable: " + dateTime.ToString(CultureInfo.CurrentCulture));
-                info.CreationTime = dateTime;
-                info.LastWriteTime = dateTime;
+                if (fileSystemDest)
+                {
+                    info.CreationTime = dateTime;
+                    info.LastWriteTime = dateTime;
+                }
+
+                if (exifDest)
+                {
+                    var image = Image.FromFile(info.FullName);
+                    // https://stackoverflow.com/questions/18820525/how-to-get-and-set-propertyitems-for-an-image
+                    var item = (PropertyItem)FormatterServices.GetUninitializedObject(typeof(PropertyItem));
+                    // https://learn.microsoft.com/zh-cn/windows/win32/gdiplus/-gdiplus-constant-property-item-descriptions#propertytagdatetime
+                    item.Id = 0x0132;
+                    // https://github.com/microsoft/win32metadata/blob/1ba2527a59da3f1c1b4809bb053d03f300af3c09/generation/WinSDK/RecompiledIdlHeaders/um/gdiplusimaging.h#L302
+                    item.Type = 2;
+                    item.Value = Encoding.ASCII.GetBytes(dateTime.ToString("yyyy:MM:dd HH:mm:ss"));
+                    item.Len = item.Value.Length;
+                    image.SetPropertyItem(item);
+                    var name = info.DirectoryName + "\\new_" + info.Name;
+                    if (fileNameDest)
+                        name = info.DirectoryName + "\\" + dateTime.ToString("yyyy-MM-dd HHmmss") + " " +
+                               info.Extension;
+                    image.Save(name);
+                    if (_binding.IsFile == Visibility)
+                        Dispatcher.Invoke(() => { PathTextBox.Text = name; });
+                }
+
+                if (!exifDest && fileNameDest)
+                {
+                    var name = info.DirectoryName + "\\" + dateTime.ToString("yyyy-MM-dd HHmmss") + " " + info.Name;
+                    info.MoveTo(name);
+                    if (_binding.IsFile == Visibility)
+                        Dispatcher.Invoke(() => { PathTextBox.Text = name; });
+                }
+
                 return new ProcessResult(info.FullName, dateTime.ToString(CultureInfo.CurrentCulture), "Success", "");
             }
             catch (Exception e)
             {
                 return new ProcessResult(info.FullName, "", "Error", e.Message);
             }
+        }
+
+        private async void SourceDestPanel_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ExifSourceCheck == null || ExifDestCheck == null || FileNameSourceCheck == null ||
+                FileNameDestCheck == null || FileSystemSourceCheck == null || FileSystemDestCheck == null) return;
+            if (sender is CheckBox)
+            {
+                var sender1 = sender as CheckBox;
+                if (sender1.Name == ExifSourceCheck.Name)
+                {
+                    await ProcessSourceDestPanel(ExifSourceCheck, ExifDestCheck);
+                }
+                else if (sender1.Name == ExifDestCheck.Name)
+                {
+                    MessageBox.Show(Resource.Resource.Warning_EXIF);
+                    await ProcessSourceDestPanel(ExifDestCheck, ExifSourceCheck);
+                }
+                else if (sender1.Name == FileNameSourceCheck.Name)
+                {
+                    await ProcessSourceDestPanel(FileNameSourceCheck, FileNameDestCheck);
+                }
+                else if (sender1.Name == FileNameDestCheck.Name)
+                {
+                    await ProcessSourceDestPanel(FileNameDestCheck, FileNameSourceCheck);
+                }
+                else if (sender1.Name == FileSystemSourceCheck.Name)
+                {
+                    await ProcessSourceDestPanel(FileSystemSourceCheck, FileSystemDestCheck);
+                }
+                else if (sender1.Name == FileSystemDestCheck.Name)
+                {
+                    await ProcessSourceDestPanel(FileSystemDestCheck, FileSystemSourceCheck);
+                }
+            }
+        }
+
+        private async Task ProcessSourceDestPanel(CheckBox source, CheckBox dest)
+        {
+            switch (source.IsChecked)
+            {
+                case true:
+                {
+                    if (dest.IsEnabled == false) return;
+                    dest.IsEnabled = false;
+                    dest.IsChecked = false;
+                    break;
+                }
+                case false:
+                {
+                    if (dest.IsEnabled) return;
+                    dest.IsEnabled = true;
+                    break;
+                }
+            }
+
+            await UpdateCurrentTime();
         }
     }
 }

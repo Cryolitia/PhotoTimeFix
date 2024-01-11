@@ -187,6 +187,24 @@ namespace PhotoTimeFix.Resource {
         }
         
         /// <summary>
+        ///   查找类似 File Name 的本地化字符串。
+        /// </summary>
+        public static string MainWindow_FileName {
+            get {
+                return ResourceManager.GetString("MainWindow_FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 File System Metadata 的本地化字符串。
+        /// </summary>
+        public static string MainWindow_FileSystem {
+            get {
+                return ResourceManager.GetString("MainWindow_FileSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 File or folder path 的本地化字符串。
         /// </summary>
         public static string MainWindow_FolderFilePath {
@@ -363,6 +381,15 @@ namespace PhotoTimeFix.Resource {
         public static string Setting_SaveLog {
             get {
                 return ResourceManager.GetString("Setting_SaveLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 This operation will attempt to manipulate the file itself and write the EXIF ​​tag, which may cause irrecoverable damage to the file. Please back up before proceeding! 的本地化字符串。
+        /// </summary>
+        public static string Warning_EXIF {
+            get {
+                return ResourceManager.GetString("Warning_EXIF", resourceCulture);
             }
         }
     }

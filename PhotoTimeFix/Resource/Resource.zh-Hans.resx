@@ -216,4 +216,13 @@
   <data name="Setting_SaveLog" xml:space="preserve">
     <value>保存日志文件</value>
   </data>
+  <data name="MainWindow_FileName" xml:space="preserve">
+    <value>文件名</value>
+  </data>
+  <data name="MainWindow_FileSystem" xml:space="preserve">
+    <value>文件系统元数据</value>
+  </data>
+  <data name="Warning_EXIF" xml:space="preserve">
+    <value>该操作会尝试操作文件本身并写入EXIF标签，可能造成文件不可恢复的损坏，请先备份再进行操作！</value>
+  </data>
 </root>

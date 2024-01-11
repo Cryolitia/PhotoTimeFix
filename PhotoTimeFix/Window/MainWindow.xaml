@@ -116,6 +116,36 @@
             </materialDesign:Card>
         </StackPanel>
         <StackPanel Name="Panel2" Grid.Row="1" Grid.Column="1">
+            <materialDesign:Card Margin="10" Padding="10" Visibility="{Binding Path=PathExist}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="Source" Style="{x:Null}" Grid.Column="0">
+                        <StackPanel>
+                            <CheckBox Name="ExifSourceCheck" Content="EXIF" Margin="10" IsChecked="True" Checked="SourceDestPanel_Checked" Unchecked="SourceDestPanel_Checked"/>
+                            <CheckBox Name="FileNameSourceCheck" Content="{x:Static res:Resource.MainWindow_FileName}" Margin="10" IsChecked="True" Checked="SourceDestPanel_Checked" Unchecked="SourceDestPanel_Checked"/>
+                            <CheckBox Name="FileSystemSourceCheck" Content="{x:Static res:Resource.MainWindow_FileSystem}" Margin="10" IsEnabled="False" Checked="SourceDestPanel_Checked" Unchecked="SourceDestPanel_Checked"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <Label Content="=>"
+                           FontSize="18pt"
+                           Margin="10"
+                           Grid.Column="1"
+                           FontFamily="Global Monospace"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center" />
+                    <GroupBox Header="Dest" Style="{x:Null}" Grid.Column="2">
+                        <StackPanel>
+                            <CheckBox Name="ExifDestCheck" Content="EXIF" Margin="10" IsEnabled="False" Checked="SourceDestPanel_Checked" Unchecked="SourceDestPanel_Checked"/>
+                            <CheckBox Name="FileNameDestCheck" Content="{x:Static res:Resource.MainWindow_FileName}" Margin="10" IsEnabled="False" Checked="SourceDestPanel_Checked" Unchecked="SourceDestPanel_Checked"/>
+                            <CheckBox Name="FileSystemDestCheck" Content="{x:Static res:Resource.MainWindow_FileSystem}" Margin="10" IsChecked="True" Checked="SourceDestPanel_Checked" Unchecked="SourceDestPanel_Checked"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </materialDesign:Card>
             <materialDesign:Card Margin="10" Padding="10">
                 <StackPanel>
                     <Grid ShowGridLines="{Binding Path=IsDebug}">

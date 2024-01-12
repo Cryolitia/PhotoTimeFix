@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using MaterialDesignThemes.Wpf;
 using PhotoTimeFix.Util;
 
 namespace PhotoTimeFix.Window
@@ -102,6 +103,7 @@ namespace PhotoTimeFix.Window
                 MessageBox.Show("OK");
                 _closable = value;
                 ScrollList.Visibility = Visibility.Visible;
+                ProcessingNow.Visibility = Visibility.Collapsed;
                 if (_logFile != null)
                 {
                     try

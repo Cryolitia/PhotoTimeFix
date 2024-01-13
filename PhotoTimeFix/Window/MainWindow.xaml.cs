@@ -451,8 +451,8 @@ namespace PhotoTimeFix.Window
         {
             try
             {
-                foreach (var mInfo in info.EnumerateDirectories()) ProcessDirectory(mInfo, list);
-                foreach (var mInfo in info.EnumerateFiles())
+                foreach (var mInfo in info.GetDirectories()) ProcessDirectory(mInfo, list);
+                foreach (var mInfo in info.GetFiles())
                     try
                     {
                         var dateTime = await TryGetDatetimeFromFile(mInfo);

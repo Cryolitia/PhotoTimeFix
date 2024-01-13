@@ -9,7 +9,7 @@
     <Identity
             Name="53240singleNeuron.PhotoTimeFix"
             Publisher="CN=F77423F5-8744-4658-A772-5E96CB64C433"
-            Version="1.3.2.0"/>
+            Version="1.3.3.0"/>
 
     <Properties>
         <DisplayName>PhotoTimeFix</DisplayName>

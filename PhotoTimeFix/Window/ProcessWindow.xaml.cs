@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
@@ -15,6 +16,7 @@ namespace PhotoTimeFix.Window
         private bool _closable;
         private FileStream _logFile;
         private UTF8Encoding utF8Encoding = new UTF8Encoding();
+        Dictionary<string, int> result = new Dictionary<string, int>();
 
         public ProcessWindow(bool saveFile)
         {
@@ -32,6 +34,16 @@ namespace PhotoTimeFix.Window
                         if (item is ProcessResult)
                         {
                             var item1 = item as ProcessResult;
+
+                            if (result.ContainsKey(item1.Status))
+                            {
+                                result[item1.Status] += 1;
+                            }
+                            else
+                            {
+                                result[item1.Status] = 1;
+                            }
+
                             builder = new StringBuilder();
                             builder.Append(item1.FileName);
                             if (item1.DateTime != "")
@@ -42,9 +54,24 @@ namespace PhotoTimeFix.Window
                         }
                     }
                     Dispatcher.BeginInvoke(new Action(() => {
-                        if (builder != null)
+                        if (!Closable)
                         {
-                            ProcessingNow.Content = builder.ToString();
+                            if (builder != null)
+                            {
+                                ProcessingNow.Content = builder.ToString();
+                            }
+                        }
+                        else
+                        {
+                            StringBuilder builder1 = new StringBuilder();
+                            foreach (var item in result)
+                            {
+                                builder1.Append(item.Key);
+                                builder1.Append(": ");
+                                builder1.Append(item.Value);
+                                builder1.Append("\t\t");
+                            }
+                            ProcessingNow.Content = builder1.ToString();
                         }
                     }));
                 }
@@ -99,11 +126,20 @@ namespace PhotoTimeFix.Window
             get => _closable;
             set
             {
-                ProgressBar.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
-                MessageBox.Show("OK");
                 _closable = value;
+                ProgressBar.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
                 ListView.Visibility = Visibility.Visible;
-                ProcessingNow.Visibility = Visibility.Collapsed;
+
+                StringBuilder builder = new StringBuilder();
+                foreach(var item in result)
+                {
+                    builder.Append(item.Key);
+                    builder.Append(": ");
+                    builder.Append(item.Value);
+                    builder.Append("\t\t");
+                }
+                ProcessingNow.Content = builder.ToString();
+
                 if (_logFile != null)
                 {
                     try
@@ -115,6 +151,7 @@ namespace PhotoTimeFix.Window
                         //ignore
                     }
                 }
+                MessageBox.Show("OK");
             }
         }
 

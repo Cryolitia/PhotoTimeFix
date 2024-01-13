@@ -432,9 +432,7 @@ namespace PhotoTimeFix.Window
                     new DateTime(_binding.NowDate.Value.Year, _binding.NowDate.Value.Month,
                         _binding.NowDate.Value.Day,
                         _binding.NowTime.Value.Hour, _binding.NowTime.Value.Minute, _binding.NowTime.Value.Second)));
-#pragma warning disable CS4014 //调用不会等待
-                Dispatcher.BeginInvoke(new Action(() => { window.ProcessResultList.Add(result); }));
-#pragma warning restore CS4014
+                await Dispatcher.BeginInvoke(new Action(() => { window.ProcessResultList.Add(result); }));
                 await UpdateCurrentTime(false);
             }
             else if (Directory.Exists(_binding.FilePath))
@@ -542,7 +540,7 @@ namespace PhotoTimeFix.Window
                 if (_setting.OnlyMedia && !mime.StartsWith("image/") && !mime.StartsWith("video/"))
                     return new ProcessResult(info.FullName, "", "Skip", "MINE unmatch: " + mime);
                 if (_setting.SafetyMode && (dateTime > DateTime.Now || dateTime < new DateTime(1970, 1, 1)))
-                    return new ProcessResult(info.FullName, "Skip", "",
+                    return new ProcessResult(info.FullName, "", "Skip",
                         "Date unbelievable: " + dateTime.ToString(CultureInfo.CurrentCulture));
                 if (fileSystemDest)
                 {
@@ -564,8 +562,7 @@ namespace PhotoTimeFix.Window
                     image.SetPropertyItem(item);
                     var name = info.DirectoryName + "\\new_" + info.Name;
                     if (fileNameDest)
-                        name = info.DirectoryName + "\\" + dateTime.ToString("yyyy-MM-dd HHmmss") + " " +
-                               info.Extension;
+                        name = info.DirectoryName + "\\" + dateTime.ToString("yyyy-MM-dd HHmmss") + info.Extension;
                     image.Save(name);
                     if (_binding.IsFile == Visibility)
                         Dispatcher.Invoke(() => { PathTextBox.Text = name; });

@@ -21,20 +21,23 @@
         </Grid.RowDefinitions>
         <ProgressBar Grid.Row="0" Name="ProgressBar" IsIndeterminate="True" MinWidth="200" MinHeight="10" Margin="0,5,0,5" />
         <Label Grid.Row="1" Name="ProcessingNow" Margin="0,10,0,10" />
-        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Visible" Margin="0" Visibility="Collapsed" Name="ScrollList">
-            <ListView Name="ListView"
-                      ItemsSource="{Binding Source={StaticResource ProcessResultList}}"
-                      VirtualizingPanel.VirtualizationMode="Recycling"
-                      VirtualizingPanel.IsVirtualizing="True" >
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileName}" Header="{x:Static res:Resource.ProcessWindow_File}" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Status}" Header="{x:Static res:Resource.ProcessWindow_Status}" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=DateTime}" Header="{x:Static res:Resource.ProcessWindow_NewTime}" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Detail}" Header="{x:Static res:Resource.ProcessWindow_Detail}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </ScrollViewer>
+        <ListView Grid.Row="2"
+                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  Margin="0"
+                  Visibility="Collapsed"
+                  Name="ListView"
+                  ItemsSource="{Binding Source={StaticResource ProcessResultList}}"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  VirtualizingPanel.IsVirtualizing="True" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=FileName}" Header="{x:Static res:Resource.ProcessWindow_File}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Status}" Header="{x:Static res:Resource.ProcessWindow_Status}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=DateTime}" Header="{x:Static res:Resource.ProcessWindow_NewTime}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Detail}" Header="{x:Static res:Resource.ProcessWindow_Detail}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

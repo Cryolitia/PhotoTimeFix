@@ -441,8 +441,10 @@ namespace PhotoTimeFix.Window
             {
                 await Task.Run(() => ProcessDirectory(new DirectoryInfo(_binding.FilePath), window.ProcessResultList));
             }
-
-            window.Closable = true;
+            await Dispatcher.BeginInvoke(new Action(() =>
+            {
+                window.Closable = true;
+            }));
         }
 
         private async void ProcessDirectory(DirectoryInfo info, ProcessResultList list)
@@ -483,9 +485,13 @@ namespace PhotoTimeFix.Window
 
         private async Task<DateTime?> TryGetDatetimeFromFile(FileInfo mInfo)
         {
+            bool exifSource = Dispatcher.Invoke(() => { return ExifSourceCheck.IsChecked == true; });
+            bool fileNameSource = Dispatcher.Invoke(() => { return FileNameSourceCheck.IsChecked == true; });
+            bool fileSystemSource = Dispatcher.Invoke(() => { return FileSystemSourceCheck.IsChecked == true; });
+
             IReadOnlyList<MetadataExtractor.Directory> directories = null;
             DateTime? dateTime = null;
-            if (ExifSourceCheck.IsChecked == true)
+            if (exifSource)
                 try
                 {
                     directories = ImageMetadataReader.ReadMetadata(mInfo.FullName);
@@ -509,13 +515,13 @@ namespace PhotoTimeFix.Window
                     //ignore
                 }
 
-            if (FileNameSourceCheck.IsChecked == true && dateTime == null)
+            if (fileNameSource && dateTime == null)
                 dateTime = await Task.Run(() =>
                 {
                     var processor = _binding.FileProcessor;
                     return processor.GetFileDateTime(mInfo);
                 });
-            if (FileSystemSourceCheck.IsChecked == true && dateTime == null)
+            if (fileSystemSource && dateTime == null)
             {
                 dateTime = mInfo.CreationTime;
                 if (dateTime == null) dateTime = mInfo.LastWriteTime;
@@ -528,9 +534,9 @@ namespace PhotoTimeFix.Window
         {
             try
             {
-                var exifDest = Dispatcher.Invoke(() => { return ExifDestCheck.IsChecked; }) == true;
-                var fileNameDest = Dispatcher.Invoke(() => { return FileNameDestCheck.IsChecked; }) == true;
-                var fileSystemDest = Dispatcher.Invoke(() => { return FileSystemDestCheck.IsChecked; }) == true;
+                bool exifDest = Dispatcher.Invoke(() => { return ExifDestCheck.IsChecked == true; });
+                bool fileNameDest = Dispatcher.Invoke(() => { return FileNameDestCheck.IsChecked == true; });
+                bool fileSystemDest = Dispatcher.Invoke(() => { return FileSystemDestCheck.IsChecked == true; });
 
                 var mime = MimeTypeMap.GetMimeType(info.Extension).ToLower();
                 if (_setting.OnlyMedia && !mime.StartsWith("image/") && !mime.StartsWith("video/"))

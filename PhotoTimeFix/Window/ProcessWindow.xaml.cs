@@ -102,7 +102,7 @@ namespace PhotoTimeFix.Window
                 ProgressBar.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
                 MessageBox.Show("OK");
                 _closable = value;
-                ScrollList.Visibility = Visibility.Visible;
+                ListView.Visibility = Visibility.Visible;
                 ProcessingNow.Visibility = Visibility.Collapsed;
                 if (_logFile != null)
                 {

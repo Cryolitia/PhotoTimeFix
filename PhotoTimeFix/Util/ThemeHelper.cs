@@ -30,13 +30,13 @@ namespace PhotoTimeFix.Util
                 MessageBox.Show(exception.ToString());
             }
 
-            IBaseTheme baseTheme;
+            var theme = new Theme();
             if (isLight)
-                baseTheme = new MaterialDesignLightTheme();
+                theme.SetLightTheme();
             else
-                baseTheme = new MaterialDesignDarkTheme();
+                theme.SetDarkTheme();
             var color = isLight ? Color.FromRgb(66, 133, 244) : Color.FromRgb(130, 168, 231);
-            var theme = Theme.Create(baseTheme, color, color);
+            theme.SetPrimaryColor(color);
 
             RequireSystemTheme(theme, isLight);
 
@@ -62,8 +62,8 @@ namespace PhotoTimeFix.Util
                     theme.SetSecondaryColor(Color.FromRgb(accentColor.R, accentColor.G, accentColor.B));
                     if (!isLight)
                     {
-                        theme.CardBackground = Color.FromRgb(18, 18, 18);
-                        theme.Paper = Colors.Black;
+                        theme.Cards.Background = Color.FromRgb(18, 18, 18);
+                        theme.Background = Colors.Black;
                     }
                 }
 #pragma warning restore CA1416 // 验证平台兼容性

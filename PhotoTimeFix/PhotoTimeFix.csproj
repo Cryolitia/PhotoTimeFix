@@ -46,10 +46,10 @@
         <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
         <PackageReference Include="CS-Script" Version="4.8.1" />
         <PackageReference Include="DesktopBridge.Helpers" Version="1.2.2" />
-        <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+        <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
         <PackageReference Include="MetadataExtractor" Version="2.8.1" />
-        <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
-        <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
+        <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.6" />
+        <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.6" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
         <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
         <PackageReference Include="WPFLicensesDialog" Version="1.0.1" />
